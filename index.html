@@ -176,32 +176,50 @@
 
   /* ---------- dex ---------- */
   .dexwrap{width:100%;max-width:440px;max-height:88dvh;display:flex;flex-direction:column;
-    background:#FFFFFF;border-radius:28px;
-    box-shadow:0 20px 44px rgba(200,150,185,.2);border:1.5px solid #FFEAF4;overflow:hidden;
-    animation:pop .4s cubic-bezier(.2,1.4,.4,1) both}
-  .dexhead{padding:16px 16px 10px;display:flex;align-items:center;gap:10px;justify-content:space-between;flex:0 0 auto}
-  .dexhead h2{margin:0;font-size:16px;color:#3E2A3A;letter-spacing:-.4px}
-  .dexhead .cnt{font-size:12px;color:#9C8298;font-weight:800}
-  .close{border:0;background:#FFF0F7;color:#C2568C;width:32px;height:32px;border-radius:50%;font-size:15px;
-    cursor:pointer;touch-action:manipulation;display:grid;place-items:center}
-  .tabs{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:2px 14px 10px;scrollbar-width:none;flex:0 0 auto}
-  .tabs::-webkit-scrollbar{display:none}
-  .tab{border:0;font:inherit;font-size:11.5px;line-height:1.2;font-weight:700;white-space:nowrap;padding:8px 12px;border-radius:999px;
-    background:#FFF4FA;color:#9A7C90;cursor:pointer;touch-action:manipulation}
-  .tab.on{background:linear-gradient(92deg,#FF8FC4,#C58CFF);color:#fff;box-shadow:0 3px 8px rgba(220,120,190,.24)}
-  .grid{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 12px 18px;display:grid;
-    grid-template-columns:repeat(4,1fr);gap:7px;grid-auto-rows:min-content;align-content:start}
-  @media(min-width:430px){.grid{grid-template-columns:repeat(5,1fr)}}
-  .cell{position:relative;border-radius:12px;overflow:hidden;background:#FFF7FC;width:100%;aspect-ratio:1/1;align-self:start;
-    display:flex;flex-direction:column;box-shadow:inset 0 0 0 1px #FFE6F1}
+    background:#FFFFFF;border-radius:24px;
+    box-shadow:0 22px 48px rgba(190,140,175,.22),0 2px 6px rgba(190,140,175,.08);border:1.5px solid #FFEAF4;overflow:hidden;
+    animation:popDex .38s cubic-bezier(.2,1.35,.4,1) both}
+  @keyframes popDex{0%{transform:scale(.94);opacity:0}100%{transform:scale(1);opacity:1}}
+  .dexhead{padding:14px 14px 10px 16px;display:flex;align-items:center;gap:8px;justify-content:space-between;flex:0 0 auto}
+  .dexhead h2{margin:0;font-size:16px;font-weight:800;color:#3E2A3A;letter-spacing:-.4px;display:flex;align-items:center;gap:6px}
+  .dexhead h2 i{font-style:normal;font-size:15px;line-height:1;display:inline-block;transform:translateY(.5px)}
+  .dexhead .cnt{font-size:11.5px;color:#8E7391;font-weight:800;letter-spacing:.1px;background:#FBF2F8;
+    border-radius:999px;padding:4px 10px;margin-left:auto;font-variant-numeric:tabular-nums}
+  .close{border:0;background:#FFF2F8;color:#C2568C;width:32px;height:32px;border-radius:50%;font-size:13px;line-height:1;
+    cursor:pointer;touch-action:manipulation;display:grid;place-items:center;padding:0;
+    box-shadow:inset 0 0 0 1px rgba(255,214,234,.9);transition:background .15s ease}
+  .close:active{background:#FFDDED}
+  .prog{flex:0 0 auto;height:6px;border-radius:999px;background:#F7EBF3;margin:0 16px 12px;overflow:hidden}
+  .prog i{display:block;height:100%;width:0;border-radius:999px;
+    background:linear-gradient(90deg,#FFA6CE,#C79BFF);transition:width .45s cubic-bezier(.2,.8,.2,1)}
+  .tabs{flex:0 0 auto;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:0 12px 12px;overflow:visible}
+  .tab{border:1px solid #FFE7F2;font:inherit;font-size:12px;line-height:1.15;font-weight:800;letter-spacing:-.2px;
+    white-space:nowrap;padding:7px 11px;border-radius:999px;background:#FFFAFD;color:#9A7C90;
+    cursor:pointer;touch-action:manipulation;transition:background .15s ease,color .15s ease,box-shadow .15s ease}
+  .tab:active{transform:translateY(1px)}
+  .tab.on{background:linear-gradient(92deg,#FF8FC4,#C58CFF);color:#fff;border-color:transparent;
+    box-shadow:0 4px 10px rgba(214,120,190,.28)}
+  .caption{flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+    padding:0 18px 8px;font-size:11px;font-weight:800;color:#B492AB;letter-spacing:-.1px}
+  .caption b{font-size:11.5px;font-weight:900;color:#7A5F76}
+  .caption em{font-style:normal;font-variant-numeric:tabular-nums;color:#AE8CA6}
+  .grid{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    padding:2px 12px 18px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;grid-auto-rows:min-content;align-content:start}
+  @media(min-width:430px){.grid{grid-template-columns:repeat(5,1fr);gap:10px}}
+  .cell{position:relative;border-radius:12px;overflow:hidden;background:#FFF9FD;width:100%;aspect-ratio:1/1;align-self:start;
+    display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(196,146,178,.10),inset 0 0 0 1px #FFE7F2}
   .cell img{width:100%;height:100%;object-fit:contain;padding:2px;background:#fff}
-  .cell .cn{position:absolute;left:0;right:0;bottom:0;font-size:8.5px;font-weight:700;text-align:center;
-    color:#5C3B52;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.95) 40%);padding:8px 1px 2px;
+  .cell .cn{position:absolute;left:0;right:0;bottom:0;font-size:8.5px;font-weight:800;text-align:center;letter-spacing:-.2px;
+    color:#5C3B52;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.94) 42%);padding:9px 2px 3px;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .cell.locked{display:grid;place-items:center;background:repeating-linear-gradient(45deg,#FFF9FC,#FFF9FC 6px,#FFF1F8 6px,#FFF1F8 12px)}
-  .cell.locked span{font-size:17px;color:#E4CBDC;font-weight:800}
+  .cell.locked{display:grid;place-items:center;background:#FDF7FB;box-shadow:inset 0 0 0 1px #F8E8F3}
+  .cell.locked:before{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(45deg,rgba(255,255,255,0),rgba(255,255,255,0) 6px,rgba(255,240,248,.7) 6px,rgba(255,240,248,.7) 12px)}
+  .cell.locked span{position:relative;font-size:15px;color:#DEC3D9;font-weight:900}
   .cell.new{box-shadow:inset 0 0 0 2px #FFB3D9,0 4px 10px rgba(255,140,190,.24)}
-  .empty{padding:26px 10px;text-align:center;font-size:12.5px;color:#9C8298;line-height:1.6}
+  .empty{grid-column:1/-1;padding:28px 10px;text-align:center;font-size:12.5px;color:#9C8298;line-height:1.6}
+  .foot{grid-column:1/-1;margin-top:10px;padding:6px 2px 0;text-align:center;font-size:11px;font-weight:700;
+    color:#C0A2B8;letter-spacing:-.2px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -239,13 +257,15 @@
 
 <!-- collection -->
 <div class="modal" id="dex" hidden>
-  <div class="dexwrap">
+  <div class="dexwrap" role="dialog" aria-modal="true" aria-labelledby="dexTitle">
     <div class="dexhead">
-      <h2>📖 도감</h2>
+      <h2 id="dexTitle"><i aria-hidden="true">📖</i>도감</h2>
       <span class="cnt" id="dexTotal">0/200</span>
-      <button type="button" class="close" id="dexClose">✕</button>
+      <button type="button" class="close" id="dexClose" aria-label="도감 닫기">✕</button>
     </div>
-    <div class="tabs" id="tabs"></div>
+    <div class="prog" aria-hidden="true"><i id="dexBar"></i></div>
+    <div class="tabs" id="tabs" role="tablist" aria-label="카테고리"></div>
+    <div class="caption"><b id="dexCatName">전체</b><em id="dexCatCnt">200종 중 0종</em></div>
     <div class="grid" id="grid"></div>
   </div>
 </div>
@@ -267,7 +287,7 @@
 <script>
 (function(){
   "use strict";
-  var CHARS = [{"id": 0, "name": "하츄핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 1, "name": "샤샤핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 2, "name": "포실핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 3, "name": "말랑핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 4, "name": "빛나핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 5, "name": "초롱핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 6, "name": "빤짝핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 7, "name": "방글핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 8, "name": "아자핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 9, "name": "라라핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 10, "name": "그림핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 11, "name": "깜빡핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 12, "name": "꺼꿀핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 13, "name": "꽁꽁핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 14, "name": "나르핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 15, "name": "노라핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 16, "name": "노리핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 17, "name": "다조핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 18, "name": "덜덜핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 19, "name": "따라핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 20, "name": "딱풀핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 21, "name": "떠벌핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 22, "name": "또까핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 23, "name": "띠용핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 24, "name": "모야핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 25, "name": "무거핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 26, "name": "무셔핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 27, "name": "바네핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 28, "name": "바로핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 29, "name": "베베핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 30, "name": "부끄핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 31, "name": "가면핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 32, "name": "공쥬핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 33, "name": "까르핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 34, "name": "뚝딱핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 35, "name": "맛나핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 36, "name": "메모핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 37, "name": "믿어핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 38, "name": "발레핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 39, "name": "소원핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 40, "name": "싹싹핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 41, "name": "고쳐핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 42, "name": "꼼딱핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 43, "name": "꾸래핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 44, "name": "꾸며핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 45, "name": "나나핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 46, "name": "뜨거핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 47, "name": "빙글핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 48, "name": "빨리핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 49, "name": "삐뽀핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 50, "name": "삐짐핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 51, "name": "솔찌핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 52, "name": "아라핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 53, "name": "아아핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 54, "name": "눈꽃핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 55, "name": "달콤핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 56, "name": "또너핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 57, "name": "롤리핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 58, "name": "마카핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 59, "name": "머랭핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 60, "name": "머핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 61, "name": "멜로핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 62, "name": "뿌뿌핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 63, "name": "새콤핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 64, "name": "샌드핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 65, "name": "와플핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 66, "name": "고고핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 67, "name": "고마핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 68, "name": "나그네핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 69, "name": "나눔핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 70, "name": "다롱핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 71, "name": "댄스핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 72, "name": "딩동핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 73, "name": "루루핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 74, "name": "몰래핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 75, "name": "뽀뽀핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 76, "name": "뽀송핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 77, "name": "뿌쵸핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 78, "name": "아롱핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 79, "name": "깡총핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 80, "name": "깨굴핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 81, "name": "나비핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 82, "name": "다이아나핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 83, "name": "다해핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 84, "name": "롱롱핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 85, "name": "뽀니핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 86, "name": "뽀득핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 87, "name": "사뿐핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 88, "name": "샤를핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 89, "name": "슈슈핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 90, "name": "스노우핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 91, "name": "실크핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 92, "name": "아름핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 93, "name": "야옹핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 94, "name": "이슬핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 95, "name": "이클립스핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 96, "name": "낭낭핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 97, "name": "냐냥핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 98, "name": "디바핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 99, "name": "라임핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 100, "name": "뮤즈핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 101, "name": "빠밤핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 102, "name": "시고르핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 103, "name": "아서핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 104, "name": "앙앙핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 105, "name": "잉잉핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 106, "name": "타카핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 107, "name": "티키핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 108, "name": "팡팡핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 109, "name": "폴짝핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 110, "name": "엘사", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 111, "name": "안나", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 112, "name": "올라프", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 113, "name": "에리얼", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 114, "name": "세바스찬", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 115, "name": "라푼젤", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 116, "name": "신데렐라", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 117, "name": "백설공주", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 118, "name": "오로라", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 119, "name": "벨", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 120, "name": "자스민", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 121, "name": "모아나", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 122, "name": "푸아", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 123, "name": "헤이헤이", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 124, "name": "주디", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 125, "name": "닉", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 126, "name": "미키", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 127, "name": "미니", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 128, "name": "도널드", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 129, "name": "데이지", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 130, "name": "구피", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 131, "name": "피글렛", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 132, "name": "티거", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 133, "name": "이요르", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 134, "name": "스티치", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 135, "name": "심바", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 136, "name": "우디", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 137, "name": "버즈", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 138, "name": "제시", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 139, "name": "조이", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 140, "name": "슬픔이", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 141, "name": "니모", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 142, "name": "도리", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 143, "name": "미라벨", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 144, "name": "메리다", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 145, "name": "뮬란", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 146, "name": "티아나", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 147, "name": "팅커벨", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 148, "name": "지니", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 149, "name": "곰돌이 푸", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 150, "name": "헬로키티", "cat": "산리오", "series": "산리오"}, {"id": 151, "name": "마이멜로디", "cat": "산리오", "series": "산리오"}, {"id": 152, "name": "쿠로미", "cat": "산리오", "series": "산리오"}, {"id": 153, "name": "시나모롤", "cat": "산리오", "series": "산리오"}, {"id": 154, "name": "폼폼푸린", "cat": "산리오", "series": "산리오"}, {"id": 155, "name": "포차코", "cat": "산리오", "series": "산리오"}, {"id": 156, "name": "리틀트윈스타", "cat": "산리오", "series": "산리오"}, {"id": 157, "name": "케로피", "cat": "산리오", "series": "산리오"}, {"id": 158, "name": "구데타마", "cat": "산리오", "series": "산리오"}, {"id": 159, "name": "마이스위트피아노", "cat": "산리오", "series": "산리오"}, {"id": 160, "name": "마론크림", "cat": "산리오", "series": "산리오"}, {"id": 161, "name": "본본리본", "cat": "산리오", "series": "산리오"}, {"id": 162, "name": "코기뮨", "cat": "산리오", "series": "산리오"}, {"id": 163, "name": "턱시도샘", "cat": "산리오", "series": "산리오"}, {"id": 164, "name": "페클", "cat": "산리오", "series": "산리오"}, {"id": 165, "name": "행요돈", "cat": "산리오", "series": "산리오"}, {"id": 166, "name": "우사하나", "cat": "산리오", "series": "산리오"}, {"id": 167, "name": "슈가번니즈", "cat": "산리오", "series": "산리오"}, {"id": 168, "name": "바츠마루", "cat": "산리오", "series": "산리오"}, {"id": 169, "name": "뽀로로", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 170, "name": "크롱", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 171, "name": "패티", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 172, "name": "루피", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 173, "name": "에디", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 174, "name": "포비", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 175, "name": "해리", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 176, "name": "타요", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 177, "name": "로기", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 178, "name": "라니", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 179, "name": "가니", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 180, "name": "프랭크", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 181, "name": "패트", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 182, "name": "포코", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 183, "name": "빌리", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 184, "name": "폴리", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 185, "name": "로이", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 186, "name": "엠버", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 187, "name": "헬리", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 188, "name": "마크", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 189, "name": "버키", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 190, "name": "호기", "cat": "핑크퐁", "series": "핑크퐁"}, {"id": 191, "name": "니니모", "cat": "핑크퐁", "series": "핑크퐁"}, {"id": 192, "name": "아기상어", "cat": "핑크퐁", "series": "핑크퐁"}, {"id": 193, "name": "토토로", "cat": "지브리", "series": "지브리"}, {"id": 194, "name": "키키", "cat": "지브리", "series": "지브리"}, {"id": 195, "name": "지지", "cat": "지브리", "series": "지브리"}, {"id": 196, "name": "도라에몽", "cat": "기타", "series": "캐릭터"}, {"id": 197, "name": "짱구", "cat": "기타", "series": "캐릭터"}, {"id": 198, "name": "스누피", "cat": "기타", "series": "캐릭터"}, {"id": 199, "name": "미니언즈", "cat": "기타", "series": "캐릭터"}];
+  var CHARS = [{"id": 0, "name": "하츄핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 1, "name": "샤샤핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 2, "name": "포실핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 3, "name": "말랑핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 4, "name": "빛나핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 5, "name": "초롱핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 6, "name": "빤짝핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 7, "name": "방글핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 8, "name": "아자핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 9, "name": "라라핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 10, "name": "그림핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 11, "name": "깜빡핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 12, "name": "꺼꿀핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 13, "name": "꽁꽁핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 14, "name": "나르핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 15, "name": "노라핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 16, "name": "노리핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 17, "name": "다조핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 18, "name": "덜덜핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 19, "name": "따라핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 20, "name": "딱풀핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 21, "name": "떠벌핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 22, "name": "또까핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 23, "name": "띠용핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 24, "name": "모야핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 25, "name": "무거핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 26, "name": "무셔핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 27, "name": "바네핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 28, "name": "바로핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 29, "name": "베베핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 30, "name": "부끄핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 31, "name": "가면핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 32, "name": "공쥬핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 33, "name": "까르핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 34, "name": "뚝딱핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 35, "name": "맛나핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 36, "name": "메모핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 37, "name": "믿어핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 38, "name": "발레핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 39, "name": "소원핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 40, "name": "싹싹핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 41, "name": "고쳐핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 42, "name": "꼼딱핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 43, "name": "꾸래핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 44, "name": "꾸며핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 45, "name": "나나핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 46, "name": "뜨거핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 47, "name": "빙글핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 48, "name": "빨리핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 49, "name": "삐뽀핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 50, "name": "삐짐핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 51, "name": "솔찌핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 52, "name": "아라핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 53, "name": "아아핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 54, "name": "눈꽃핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 55, "name": "달콤핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 56, "name": "또너핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 57, "name": "롤리핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 58, "name": "마카핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 59, "name": "머랭핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 60, "name": "머핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 61, "name": "멜로핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 62, "name": "뿌뿌핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 63, "name": "새콤핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 64, "name": "샌드핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 65, "name": "와플핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 66, "name": "고고핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 67, "name": "고마핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 68, "name": "나그네핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 69, "name": "나눔핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 70, "name": "다롱핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 71, "name": "댄스핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 72, "name": "딩동핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 73, "name": "루루핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 74, "name": "몰래핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 75, "name": "뽀뽀핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 76, "name": "뽀송핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 77, "name": "뿌쵸핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 78, "name": "아롱핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 79, "name": "깡총핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 80, "name": "깨굴핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 81, "name": "나비핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 82, "name": "다이아나핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 83, "name": "다해핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 84, "name": "롱롱핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 85, "name": "뽀니핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 86, "name": "뽀득핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 87, "name": "사뿐핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 88, "name": "샤를핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 89, "name": "슈슈핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 90, "name": "스노우핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 91, "name": "실크핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 92, "name": "아름핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 93, "name": "야옹핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 94, "name": "이슬핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 95, "name": "이클립스핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 96, "name": "낭낭핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 97, "name": "냐냥핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 98, "name": "디바핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 99, "name": "라임핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 100, "name": "뮤즈핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 101, "name": "빠밤핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 102, "name": "시고르핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 103, "name": "아서핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 104, "name": "앙앙핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 105, "name": "잉잉핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 106, "name": "타카핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 107, "name": "티키핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 108, "name": "팡팡핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 109, "name": "폴짝핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 110, "name": "엘사", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 111, "name": "안나", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 112, "name": "올라프", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 113, "name": "에리얼", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 114, "name": "세바스찬", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 115, "name": "라푼젤", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 116, "name": "신데렐라", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 117, "name": "백설공주", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 118, "name": "오로라", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 119, "name": "벨", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 120, "name": "자스민", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 121, "name": "모아나", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 122, "name": "푸아", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 123, "name": "헤이헤이", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 124, "name": "주디", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 125, "name": "닉", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 126, "name": "미키", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 127, "name": "미니", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 128, "name": "도널드", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 129, "name": "데이지", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 130, "name": "구피", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 131, "name": "피글렛", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 132, "name": "티거", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 133, "name": "이요르", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 134, "name": "스티치", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 135, "name": "심바", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 136, "name": "우디", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 137, "name": "버즈", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 138, "name": "제시", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 139, "name": "조이", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 140, "name": "슬픔이", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 141, "name": "니모", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 142, "name": "도리", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 143, "name": "미라벨", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 144, "name": "메리다", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 145, "name": "뮬란", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 146, "name": "티아나", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 147, "name": "팅커벨", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 148, "name": "지니", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 149, "name": "곰돌이 푸", "cat": "디즈니", "series": "디즈니 픽사"}, {"id": 150, "name": "헬로키티", "cat": "산리오", "series": "산리오"}, {"id": 151, "name": "마이멜로디", "cat": "산리오", "series": "산리오"}, {"id": 152, "name": "쿠로미", "cat": "산리오", "series": "산리오"}, {"id": 153, "name": "시나모롤", "cat": "산리오", "series": "산리오"}, {"id": 154, "name": "폼폼푸린", "cat": "산리오", "series": "산리오"}, {"id": 155, "name": "포차코", "cat": "산리오", "series": "산리오"}, {"id": 156, "name": "리틀트윈스타", "cat": "산리오", "series": "산리오"}, {"id": 157, "name": "케로피", "cat": "산리오", "series": "산리오"}, {"id": 158, "name": "구데타마", "cat": "산리오", "series": "산리오"}, {"id": 159, "name": "마이스위트피아노", "cat": "산리오", "series": "산리오"}, {"id": 160, "name": "마론크림", "cat": "산리오", "series": "산리오"}, {"id": 161, "name": "본본리본", "cat": "산리오", "series": "산리오"}, {"id": 162, "name": "코기뮨", "cat": "산리오", "series": "산리오"}, {"id": 163, "name": "턱시도샘", "cat": "산리오", "series": "산리오"}, {"id": 164, "name": "페클", "cat": "산리오", "series": "산리오"}, {"id": 165, "name": "행요돈", "cat": "산리오", "series": "산리오"}, {"id": 166, "name": "우사하나", "cat": "산리오", "series": "산리오"}, {"id": 167, "name": "슈가번니즈", "cat": "산리오", "series": "산리오"}, {"id": 168, "name": "바츠마루", "cat": "산리오", "series": "산리오"}, {"id": 169, "name": "뽀로로", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 170, "name": "크롱", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 171, "name": "패티", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 172, "name": "루피", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 173, "name": "에디", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 174, "name": "포비", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 175, "name": "해리", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 176, "name": "타요", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 177, "name": "로기", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 178, "name": "라니", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 179, "name": "가니", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 180, "name": "프랭크", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 181, "name": "패트", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 182, "name": "포코", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 183, "name": "빌리", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 184, "name": "폴리", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 185, "name": "로이", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 186, "name": "엠버", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 187, "name": "헬리", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 188, "name": "마크", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 189, "name": "버키", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 190, "name": "호기", "cat": "핑크퐁", "series": "핑크퐁"}, {"id": 191, "name": "니니모", "cat": "핑크퐁", "series": "핑크퐁"}, {"id": 192, "name": "아기상어", "cat": "핑크퐁", "series": "핑크퐁"}, {"id": 193, "name": "토토로", "cat": "지브리", "series": "지브리"}, {"id": 194, "name": "키키", "cat": "지브리", "series": "지브리"}, {"id": 195, "name": "지지", "cat": "지브리", "series": "지브리"}, {"id": 196, "name": "도라에몽", "cat": "기타", "series": "캐릭터"}, {"id": 197, "name": "짱구", "cat": "기타", "series": "캐릭터"}, {"id": 198, "name": "스누피", "cat": "기타", "series": "캐릭터"}, {"id": 199, "name": "미니언즈", "cat": "기타", "series": "캐릭터"}];
   var EMBED = null;              // null for dist, {id:dataURI} for single file
   var TOTAL = CHARS.length;
 
@@ -276,7 +296,7 @@
 
   var CAT_COLORS = {
     '티니핑':['#ff8fc4','#c98cff'],
-    '디즈니·픽사':['#7fb6ff','#a98cff'],
+    '디즈니':['#7fb6ff','#a98cff'],
     '산리오':['#ff9fb5','#ffc46b'],
     '뽀로로':['#6fd0e8','#7fb6ff'],
     '타요':['#ffb26b','#ff8f6b'],
@@ -575,24 +595,56 @@
 
   /* ---------------- dex ---------------- */
   var dexCat = '전체';
+  var CAT_ORDER = ['티니핑','디즈니','산리오','뽀로로','타요','로보카폴리','핑크퐁','지브리','기타'];
+  var CAT_LABEL = {'로보카폴리':'폴리'};
+  function catLabel(c){ return CAT_LABEL[c] || c; }
   function catList(){
-    var seen = {}, out = ['전체'];
-    CHARS.forEach(function(c){ if(!seen[c.cat]){ seen[c.cat] = 1; out.push(c.cat); } });
+    var have = {};
+    CHARS.forEach(function(c){ have[c.cat] = 1; });
+    var out = ['전체'];
+    CAT_ORDER.forEach(function(c){ if(have[c]){ out.push(c); delete have[c]; } });
+    Object.keys(have).forEach(function(c){ out.push(c); });
     return out;
+  }
+  function countIn(cat){
+    var n = 0, tot = 0;
+    CHARS.forEach(function(c){
+      if(cat !== '전체' && c.cat !== cat) return;
+      tot++;
+      if(collected.indexOf(c.id) >= 0) n++;
+    });
+    return {n:n, tot:tot};
   }
   function openDex(){
     ambientOff();
+    if(catList().indexOf(dexCat) < 0) dexCat = '전체';
+
+    var all = countIn('전체');
+    $('dexTotal').textContent = all.n + '/' + all.tot;
+    $('dexBar').style.width = (all.tot ? (all.n / all.tot * 100) : 0) + '%';
+
     var tabs = $('tabs');
     tabs.innerHTML = '';
     catList().forEach(function(cat){
+      var on = (cat === dexCat);
       var b = document.createElement('button');
-      b.type = 'button'; b.className = 'tab' + (cat === dexCat ? ' on' : '');
-      var n = (cat === '전체') ? collected.length : CHARS.filter(function(c){ return c.cat === cat && collected.indexOf(c.id) >= 0; }).length;
-      var tot = (cat === '전체') ? TOTAL : CHARS.filter(function(c){ return c.cat === cat; }).length;
-      b.textContent = cat + ' ' + n + '/' + tot;
-      b.addEventListener('click', function(){ dexCat = cat; openDex(); });
+      b.type = 'button';
+      b.className = 'tab' + (on ? ' on' : '');
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.textContent = catLabel(cat);
+      b.addEventListener('click', function(){
+        if(dexCat === cat) return;
+        dexCat = cat;
+        openDex();
+      });
       tabs.appendChild(b);
     });
+
+    var cur = countIn(dexCat);
+    $('dexCatName').textContent = catLabel(dexCat);
+    $('dexCatCnt').textContent = cur.tot + '종 중 ' + cur.n + '종';
+
     var grid = $('grid');
     grid.innerHTML = '';
     var shown = 0;
@@ -607,9 +659,18 @@
       } else {
         cell.innerHTML = '<span>?</span>';
       }
+      cell.title = got ? c.name : '아직 못 만난 친구';
       grid.appendChild(cell);
     });
     if(!shown) grid.innerHTML = '<div class="empty">아직 없어요!</div>';
+    if(shown){
+      var foot = document.createElement('div');
+      foot.className = 'foot';
+      var more = cur.tot - cur.n;
+      foot.textContent = more > 0 ? (more + '종 더 모을 수 있어요') : '여기 친구들은 다 만났어요!';
+      grid.appendChild(foot);
+    }
+    grid.scrollTop = 0;
     $('dex').hidden = false;
     document.body.style.overflow = 'hidden';
   }
