@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffe6f4">
+<title>오늘의 캐릭터 뽑기</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  [hidden]{display:none !important}
+  html,body{margin:0;padding:0;min-height:100%}
+  body{
+    font-family:"Apple SD Gothic Neo","AppleSDGothicNeo","Noto Sans KR","Malgun Gothic",system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(120% 70% at 12% 0%,rgba(255,190,222,.95),rgba(255,190,222,0) 58%),
+      radial-gradient(110% 70% at 92% 100%,rgba(186,255,232,.9),rgba(186,255,232,0) 55%),
+      radial-gradient(90% 60% at 85% 8%,rgba(214,196,255,.85),rgba(214,196,255,0) 60%),
+      linear-gradient(168deg,#ffe3f1 0%,#f3e0ff 28%,#e2ecff 54%,#e2fff4 78%,#fff3dd 100%);
+    color:#4b3552;min-height:100vh;min-height:100dvh;overflow-x:hidden;overscroll-behavior:none;
+    touch-action:manipulation;-webkit-user-select:none;user-select:none;
+    display:flex;flex-direction:column;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  /* ---------- floating background ---------- */
+  .bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+  .bg i{position:absolute;display:block;opacity:.5;animation:floaty var(--dur,10s) ease-in-out infinite;filter:drop-shadow(0 6px 10px rgba(255,140,190,.18))}
+  @keyframes floaty{0%,100%{transform:translate3d(0,0,0) rotate(-4deg)}50%{transform:translate3d(0,-22px,0) rotate(6deg)}}
+  .bg .cloud{position:absolute;border-radius:50%;background:rgba(255,255,255,.65);filter:blur(1px);opacity:.55}
+
+  /* ---------- header ---------- */
+  header{position:relative;z-index:3;padding:16px 18px 2px;text-align:center}
+  h1{margin:0;font-size:21px;letter-spacing:-.4px;font-weight:800;
+    background:linear-gradient(92deg,#ff7fbc,#c98cff 45%,#7fb6ff 78%,#ffb76b);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 2px 0 rgba(255,255,255,.9))}
+  .sub{margin:5px 0 0;font-size:11.5px;color:#a07fae;letter-spacing:-.2px}
+  .hud{display:flex;gap:9px;justify-content:center;align-items:center;margin-top:11px;flex-wrap:wrap}
+  .pill{position:relative;display:inline-flex;align-items:center;gap:6px;border:0;font:inherit;font-weight:800;
+    font-size:13px;padding:9px 15px;border-radius:999px;cursor:pointer;touch-action:manipulation;
+    color:#8a3b6b;background:linear-gradient(180deg,#fff 0%,#ffe8f3 55%,#ffd3e7 100%);
+    box-shadow:0 5px 0 #ffb9d8,0 9px 18px rgba(255,120,180,.28),inset 0 1px 0 #fff;
+    transition:transform .12s ease,box-shadow .12s ease}
+  .pill:active{transform:translateY(3px);box-shadow:0 2px 0 #ffb9d8,0 4px 10px rgba(255,120,180,.3),inset 0 1px 0 #fff}
+  .pill.dex{color:#5a3d8a;background:linear-gradient(180deg,#fff 0%,#efe6ff 55%,#ddd0ff 100%);box-shadow:0 5px 0 #c3aef5,0 9px 18px rgba(150,110,230,.26),inset 0 1px 0 #fff}
+  .pill.dex:active{box-shadow:0 2px 0 #c3aef5,0 4px 10px rgba(150,110,230,.28),inset 0 1px 0 #fff}
+  .pill b{font-size:14px}
+  .pill .heartcount{letter-spacing:1px}
+
+  /* ---------- main ---------- */
+  main{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:4px 16px 26px;gap:8px}
+  .deckglow{position:relative;z-index:2;font-size:13px;color:#fff;letter-spacing:6px;text-shadow:0 0 8px rgba(255,170,220,.95),0 0 16px rgba(190,160,255,.8);animation:twinkle 2.8s ease-in-out infinite}
+  .hint{margin:0 0 2px;font-size:13px;color:#9c7cae;text-align:center;letter-spacing:-.2px;line-height:1.5}
+  .hint b{color:#e0659f}
+
+  .deck{position:relative;width:100%;max-width:360px;height:280px;display:flex;align-items:center;justify-content:center;perspective:1200px}
+  .deck:after{content:"";position:absolute;left:50%;bottom:2px;width:220px;height:30px;margin-left:-110px;border-radius:50%;
+    background:radial-gradient(ellipse at center,rgba(196,140,210,.28),rgba(255,255,255,0) 72%);filter:blur(5px);pointer-events:none}
+  .deck:before{content:"";position:absolute;width:280px;height:280px;left:50%;top:50%;margin:-140px 0 0 -140px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(255,224,246,.7) 38%,rgba(255,255,255,0) 70%);
+    filter:blur(6px);pointer-events:none}
+  .card{position:absolute;width:132px;height:192px;border:0;padding:0;background:transparent;font:inherit;
+    cursor:pointer;touch-action:manipulation;transform-style:preserve-3d;
+    transition:transform .55s cubic-bezier(.2,.9,.25,1.15),opacity .35s ease;
+    will-change:transform}
+  .card .face{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    overflow:hidden;box-shadow:0 12px 22px rgba(150,90,150,.24)}
+  /* --- back : magic hologram card --- */
+  .back{background:
+      radial-gradient(120% 90% at 20% 10%,rgba(255,255,255,.55),rgba(255,255,255,0) 58%),
+      radial-gradient(90% 70% at 85% 90%,rgba(255,214,120,.45),rgba(255,255,255,0) 60%),
+      linear-gradient(150deg,#ffb3d8 0%,#ddb3ff 28%,#a9d2ff 54%,#b0ffe4 74%,#ffdd9e 100%);
+    border:1px solid rgba(255,255,255,.95)}
+  .back:before{content:"";position:absolute;inset:5px;border-radius:12px;
+    background:linear-gradient(140deg,rgba(255,255,255,.65),rgba(255,255,255,0) 42%,rgba(255,255,255,.5) 60%,rgba(255,255,255,0) 78%);
+    box-shadow:inset 0 0 0 2px rgba(247,225,160,.95),inset 0 0 0 3px rgba(255,255,255,.95),inset 0 0 22px rgba(255,214,240,.95)}
+  .back:after{content:"";position:absolute;top:-40%;left:-60%;width:70%;height:190%;
+    background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85),rgba(255,255,255,0));
+    transform:rotate(18deg);animation:shimmer 3.6s ease-in-out infinite}
+  @keyframes shimmer{0%{left:-70%}55%{left:120%}100%{left:120%}}
+  .back .mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
+  .back .gem{width:56px;height:56px;display:grid;place-items:center;border-radius:50%;
+    background:radial-gradient(circle at 32% 28%,#fff,rgba(255,255,255,.3) 38%,rgba(255,255,255,0) 60%),
+      conic-gradient(from 210deg,#ffb3d9,#ffe7a8,#b9e7ff,#d9b8ff,#ffb3d9);
+    box-shadow:0 0 0 2px rgba(255,255,255,.95),0 0 0 4px rgba(232,190,255,.75),0 8px 18px rgba(200,120,200,.3),inset 0 0 12px rgba(255,255,255,.9);
+    animation:pulseGem 2.6s ease-in-out infinite}
+  @keyframes pulseGem{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  .back .gem svg{width:26px;height:24px;filter:drop-shadow(0 1px 1px rgba(255,255,255,.9))}
+  .back .spark{position:absolute;color:#fff;font-size:11px;text-shadow:0 0 6px #fff,0 0 12px #ffc0e5;animation:twinkle 2.2s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.15)}}
+  /* --- front (small reveal on card) --- */
+  .front{transform:rotateY(180deg);background:linear-gradient(180deg,#fff,#fff8fc);
+    box-shadow:0 12px 22px rgba(150,90,150,.28),inset 0 0 0 2px rgba(255,255,255,.9),inset 0 0 0 4px rgba(255,196,226,.9)}
+  .front img{width:100%;height:82%;object-fit:contain;padding:8px 6px 0;display:block}
+  .front .nm{height:18%;display:grid;place-items:center;font-size:11px;font-weight:800;color:#6b4a72;
+    background:linear-gradient(180deg,#fff0f7,#ffdff0);letter-spacing:-.3px}
+  .card.flipped{transform:rotateY(180deg)}
+
+  .cardwrap{position:absolute;left:50%;top:50%;margin:-96px 0 0 -66px;transition:transform .55s cubic-bezier(.2,.9,.25,1.15),opacity .4s ease;will-change:transform}
+  .cardwrap:active{filter:brightness(1.03)}
+  .cardwrap.lift{transform:translateY(-8px) scale(1.06)!important;z-index:5}
+
+  /* ---------- done / complete ---------- */
+  .panel{width:100%;max-width:340px;text-align:center;padding:22px 18px;border-radius:26px;
+    background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,240,250,.88));
+    box-shadow:0 16px 34px rgba(190,120,180,.18),inset 0 1px 0 #fff;border:1px solid rgba(255,255,255,.9)}
+  .panel h2{margin:0 0 8px;font-size:17px;color:#7a5482}
+  .panel p{margin:0;font-size:13px;color:#9a7ba8;line-height:1.6}
+  .panel .big{font-size:40px;margin-bottom:6px}
+  .btn{margin-top:14px;border:0;font:inherit;font-weight:800;font-size:14px;padding:12px 22px;border-radius:999px;cursor:pointer;
+    touch-action:manipulation;color:#fff;background:linear-gradient(180deg,#ff9ccd,#f56fae);
+    box-shadow:0 5px 0 #e05a99,0 10px 20px rgba(240,110,170,.35)}
+  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #e05a99}
+  .btn.ghost{color:#7a5482;background:linear-gradient(180deg,#fff,#f0e6ff);box-shadow:0 5px 0 #d6c5f2,0 10px 20px rgba(160,130,220,.22)}
+
+  /* ---------- fx layer ---------- */
+  .fx{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+  .p{position:absolute;left:0;top:0;will-change:transform,opacity;animation:pfly var(--d) cubic-bezier(.18,.72,.25,1) forwards}
+  @keyframes pfly{
+    0%{transform:translate3d(var(--x),var(--y),0) scale(.15) rotate(0deg);opacity:0}
+    12%{opacity:1}
+    58%{transform:translate3d(calc(var(--x) + var(--mx)),calc(var(--y) + var(--my)),0) scale(1) rotate(var(--mr));opacity:1}
+    100%{transform:translate3d(calc(var(--x) + var(--tx)),calc(var(--y) + var(--ty)),0) scale(.45) rotate(var(--rot));opacity:0}
+  }
+  .p svg{display:block;filter:drop-shadow(0 3px 6px rgba(255,120,180,.35))}
+  .amb{position:fixed;bottom:-40px;opacity:0;animation:rise linear forwards;will-change:transform,opacity}
+  @keyframes rise{
+    0%{opacity:0;transform:translate3d(0,0,0) scale(.55) rotate(-8deg)}
+    18%{opacity:.95}
+    100%{opacity:0;transform:translate3d(var(--dx),-102vh,0) scale(1.15) rotate(26deg)}
+  }
+
+  /* ---------- modals ---------- */
+  .modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 40%,rgba(255,240,250,.92),rgba(232,214,255,.9) 55%,rgba(210,232,255,.92));
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:18px;animation:fadein .28s ease}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .stage{position:relative;width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  /* rotating aura */
+  .aura{position:absolute;top:50%;left:50%;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;
+    background:conic-gradient(from 0deg,rgba(255,170,210,.55),rgba(255,238,170,.45),rgba(170,225,255,.5),rgba(205,170,255,.5),rgba(255,170,210,.55));
+    filter:blur(20px);animation:spin 11s linear infinite;z-index:0;pointer-events:none}
+  .rays{position:absolute;top:50%;left:50%;width:460px;height:460px;margin:-230px 0 0 -230px;border-radius:50%;
+    background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.85) 0deg 4deg,rgba(255,255,255,0) 4deg 15deg);
+    mask:radial-gradient(circle,rgba(0,0,0,.9) 28%,rgba(0,0,0,0) 62%);
+    -webkit-mask:radial-gradient(circle,rgba(0,0,0,.9) 28%,rgba(0,0,0,0) 62%);
+    animation:spin 16s linear infinite reverse;z-index:0;pointer-events:none;opacity:.75}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .photo{position:relative;z-index:2;width:min(78vw,286px);border-radius:26px;padding:10px 10px 0;
+    background:linear-gradient(180deg,#fff,#fff9fd);
+    box-shadow:0 22px 48px rgba(150,90,160,.32),inset 0 0 0 2px rgba(255,255,255,.95),inset 0 0 0 4px rgba(255,200,230,.85);
+    transform:rotate(-1.2deg);animation:pop .55s cubic-bezier(.2,1.5,.4,1) both}
+  @keyframes pop{0%{transform:scale(.5) rotate(-8deg);opacity:0}70%{transform:scale(1.05) rotate(1deg)}100%{transform:scale(1) rotate(-1.2deg);opacity:1}}
+  .photo .ribbon{position:absolute;z-index:6;top:-19px;left:50%;transform:translateX(-50%);white-space:nowrap;
+    font-size:11.5px;font-weight:800;letter-spacing:-.3px;color:#fff;padding:7px 16px;border-radius:999px;
+    background:linear-gradient(92deg,var(--c1,#ff8fc4),var(--c2,#c98cff));
+    box-shadow:0 4px 10px rgba(190,110,190,.35),inset 0 1px 0 rgba(255,255,255,.6)}
+  .photo .imgbox{position:relative;border-radius:20px;overflow:hidden;background:
+      radial-gradient(circle at 50% 42%,#fff 0%,#fff6fb 55%,#f2e8ff 100%)}
+  .photo img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain;padding:6px}
+  .photo .holo{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.7) 46%,rgba(255,255,255,0) 62%);
+    transform:translateX(-120%);animation:sweep 3.4s ease-in-out .35s infinite}
+  @keyframes sweep{0%{transform:translateX(-120%)}45%{transform:translateX(120%)}100%{transform:translateX(120%)}}
+  .photo .name{margin:2px -10px 0;padding:11px 10px 14px;text-align:center;border-radius:0 0 26px 26px;
+    background:linear-gradient(180deg,#fff6fb,#ffe4f2)}
+  .photo .name b{font-size:22px;letter-spacing:-.6px;color:#5d3a66}
+  .photo .name span{display:block;margin-top:3px;font-size:11px;color:#b088bd;letter-spacing:-.2px}
+  .revealtxt{position:relative;z-index:2;font-size:12.5px;color:#8f6c9e;letter-spacing:-.2px}
+  .stage .btn{position:relative;z-index:3}
+
+  /* ---------- dex ---------- */
+  .dexwrap{width:100%;max-width:440px;max-height:88dvh;display:flex;flex-direction:column;
+    background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(255,244,252,.97));border-radius:28px;
+    box-shadow:0 24px 50px rgba(150,100,170,.28);border:1px solid rgba(255,255,255,.9);overflow:hidden;
+    animation:pop .4s cubic-bezier(.2,1.4,.4,1) both}
+  .dexhead{padding:16px 16px 10px;display:flex;align-items:center;gap:10px;justify-content:space-between;flex:0 0 auto}
+  .dexhead h2{margin:0;font-size:16px;color:#6d4a78}
+  .dexhead .cnt{font-size:12px;color:#a98fb8;font-weight:700}
+  .close{border:0;background:#f3e8fb;color:#8a66a0;width:32px;height:32px;border-radius:50%;font-size:15px;
+    cursor:pointer;touch-action:manipulation;display:grid;place-items:center}
+  .tabs{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:2px 14px 10px;scrollbar-width:none;flex:0 0 auto}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{border:0;font:inherit;font-size:11.5px;line-height:1.2;font-weight:700;white-space:nowrap;padding:8px 12px;border-radius:999px;
+    background:#f6eefb;color:#9978ac;cursor:pointer;touch-action:manipulation}
+  .tab.on{background:linear-gradient(92deg,#ff9ccd,#c58cff);color:#fff;box-shadow:0 4px 10px rgba(220,120,190,.3)}
+  .grid{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 12px 18px;display:grid;
+    grid-template-columns:repeat(4,1fr);gap:7px;grid-auto-rows:min-content;align-content:start}
+  @media(min-width:430px){.grid{grid-template-columns:repeat(5,1fr)}}
+  .cell{position:relative;border-radius:12px;overflow:hidden;background:#f7f1fb;width:100%;aspect-ratio:1/1;align-self:start;
+    display:flex;flex-direction:column;box-shadow:inset 0 0 0 1px rgba(230,210,245,.9)}
+  .cell img{width:100%;height:100%;object-fit:contain;padding:2px;background:#fff}
+  .cell .cn{position:absolute;left:0;right:0;bottom:0;font-size:8.5px;font-weight:700;text-align:center;
+    color:#6d4a78;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.95) 40%);padding:8px 1px 2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cell.locked{display:grid;place-items:center;background:repeating-linear-gradient(45deg,#efe6f8,#efe6f8 6px,#e7dbf5 6px,#e7dbf5 12px)}
+  .cell.locked span{font-size:17px;color:#c9b3dd;font-weight:800}
+  .cell.new{box-shadow:inset 0 0 0 2px #ffb3d9,0 4px 10px rgba(255,140,190,.28)}
+  .empty{padding:26px 10px;text-align:center;font-size:12.5px;color:#a98fb8;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="bg" id="bg"></div>
+
+<header>
+  <h1>오늘의 캐릭터 뽑기</h1>
+  <p class="sub">소이를 위한 200명의 친구들 ♡</p>
+  <div class="hud">
+    <div class="pill" id="chances"><span class="heartcount" id="hearts">💗💗💗</span><b id="cntText">3번</b></div>
+    <button type="button" class="pill dex" id="openDex">📖 도감 <b id="dexCnt">0/200</b></button>
+  </div>
+</header>
+
+<main>
+  <span class="deckglow" aria-hidden="true">✦ ✧ ✦</span>
+  <p class="hint" id="hint">카드를 <b>콕!</b> 눌러서 오늘의 친구를 만나요</p>
+  <div class="deck" id="deck"></div>
+  <div id="doneBox" hidden></div>
+</main>
+
+<div class="fx" id="fx"></div>
+
+<!-- reveal -->
+<div class="modal" id="reveal" hidden>
+  <div class="stage">
+    <div class="aura"></div>
+    <div class="rays"></div>
+    <div class="photo" id="photo">
+      <div class="ribbon" id="ribbon">캐치! 티니핑</div>
+      <div class="imgbox"><img id="rImg" alt=""><div class="holo"></div></div>
+      <div class="name"><b id="rName">하츄핑</b><span id="rSeries"></span></div>
+    </div>
+    <p class="revealtxt" id="rMsg">와~ 새로운 친구를 만났어요!</p>
+    <button type="button" class="btn" id="rClose">좋아! 다음 카드</button>
+  </div>
+</div>
+
+<!-- collection -->
+<div class="modal" id="dex" hidden>
+  <div class="dexwrap">
+    <div class="dexhead">
+      <h2>📖 내 도감</h2>
+      <span class="cnt" id="dexTotal">0 / 200</span>
+      <button type="button" class="close" id="dexClose">✕</button>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+</div>
+
+<!-- complete -->
+<div class="modal" id="complete" hidden>
+  <div class="stage">
+    <div class="aura"></div>
+    <div class="rays"></div>
+    <div class="panel" style="position:relative;z-index:2">
+      <div class="big">🎉</div>
+      <h2>200종 도감 완성! 🎉</h2>
+      <p>소이가 200명의 친구를 <b>모두</b> 만났어요!<br>정말 대단해요 ✨</p>
+      <button type="button" class="btn" id="resetAll">처음부터 다시 모으기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var CHARS = [{"id": 0, "name": "하츄핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 1, "name": "샤샤핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 2, "name": "포실핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 3, "name": "말랑핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 4, "name": "빛나핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 5, "name": "초롱핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 6, "name": "빤짝핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 7, "name": "방글핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 8, "name": "아자핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 9, "name": "라라핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 10, "name": "그림핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 11, "name": "깜빡핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 12, "name": "꺼꿀핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 13, "name": "꽁꽁핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 14, "name": "나르핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 15, "name": "노라핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 16, "name": "노리핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 17, "name": "다조핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 18, "name": "덜덜핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 19, "name": "따라핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 20, "name": "딱풀핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 21, "name": "떠벌핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 22, "name": "또까핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 23, "name": "띠용핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 24, "name": "모야핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 25, "name": "무거핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 26, "name": "무셔핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 27, "name": "바네핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 28, "name": "바로핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 29, "name": "베베핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 30, "name": "부끄핑", "cat": "티니핑", "series": "캐치! 티니핑"}, {"id": 31, "name": "가면핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 32, "name": "공쥬핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 33, "name": "까르핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 34, "name": "뚝딱핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 35, "name": "맛나핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 36, "name": "메모핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 37, "name": "믿어핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 38, "name": "발레핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 39, "name": "소원핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 40, "name": "싹싹핑", "cat": "티니핑", "series": "반짝반짝 캐치! 티니핑"}, {"id": 41, "name": "고쳐핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 42, "name": "꼼딱핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 43, "name": "꾸래핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 44, "name": "꾸며핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 45, "name": "나나핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 46, "name": "뜨거핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 47, "name": "빙글핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 48, "name": "빨리핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 49, "name": "삐뽀핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 50, "name": "삐짐핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 51, "name": "솔찌핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 52, "name": "아라핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 53, "name": "아아핑", "cat": "티니핑", "series": "알쏭달쏭 캐치! 티니핑"}, {"id": 54, "name": "눈꽃핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 55, "name": "달콤핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 56, "name": "또너핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 57, "name": "롤리핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 58, "name": "마카핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 59, "name": "머랭핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 60, "name": "머핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 61, "name": "멜로핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 62, "name": "뿌뿌핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 63, "name": "새콤핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 64, "name": "샌드핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 65, "name": "와플핑", "cat": "티니핑", "series": "새콤달콤 캐치! 티니핑"}, {"id": 66, "name": "고고핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 67, "name": "고마핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 68, "name": "나그네핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 69, "name": "나눔핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 70, "name": "다롱핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 71, "name": "댄스핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 72, "name": "딩동핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 73, "name": "루루핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 74, "name": "몰래핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 75, "name": "뽀뽀핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 76, "name": "뽀송핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 77, "name": "뿌쵸핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 78, "name": "아롱핑", "cat": "티니핑", "series": "슈팅스타 캐치! 티니핑"}, {"id": 79, "name": "깡총핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 80, "name": "깨굴핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 81, "name": "나비핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 82, "name": "다이아나핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 83, "name": "다해핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 84, "name": "롱롱핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 85, "name": "뽀니핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 86, "name": "뽀득핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 87, "name": "사뿐핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 88, "name": "샤를핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 89, "name": "슈슈핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 90, "name": "스노우핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 91, "name": "실크핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 92, "name": "아름핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 93, "name": "야옹핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 94, "name": "이슬핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 95, "name": "이클립스핑", "cat": "티니핑", "series": "프린세스 캐치! 티니핑"}, {"id": 96, "name": "낭낭핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 97, "name": "냐냥핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 98, "name": "디바핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 99, "name": "라임핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 100, "name": "뮤즈핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 101, "name": "빠밤핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 102, "name": "시고르핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 103, "name": "아서핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 104, "name": "앙앙핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 105, "name": "잉잉핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 106, "name": "타카핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 107, "name": "티키핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 108, "name": "팡팡핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 109, "name": "폴짝핑", "cat": "티니핑", "series": "쥬얼스타 캐치! 티니핑"}, {"id": 110, "name": "엘사", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 111, "name": "안나", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 112, "name": "올라프", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 113, "name": "에리얼", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 114, "name": "세바스찬", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 115, "name": "라푼젤", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 116, "name": "신데렐라", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 117, "name": "백설공주", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 118, "name": "오로라", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 119, "name": "벨", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 120, "name": "자스민", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 121, "name": "모아나", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 122, "name": "푸아", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 123, "name": "헤이헤이", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 124, "name": "주디", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 125, "name": "닉", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 126, "name": "미키", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 127, "name": "미니", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 128, "name": "도널드", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 129, "name": "데이지", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 130, "name": "구피", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 131, "name": "피글렛", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 132, "name": "티거", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 133, "name": "이요르", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 134, "name": "스티치", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 135, "name": "심바", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 136, "name": "우디", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 137, "name": "버즈", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 138, "name": "제시", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 139, "name": "조이", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 140, "name": "슬픔이", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 141, "name": "니모", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 142, "name": "도리", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 143, "name": "미라벨", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 144, "name": "메리다", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 145, "name": "뮬란", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 146, "name": "티아나", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 147, "name": "팅커벨", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 148, "name": "지니", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 149, "name": "곰돌이 푸", "cat": "디즈니·픽사", "series": "디즈니·픽사"}, {"id": 150, "name": "헬로키티", "cat": "산리오", "series": "산리오"}, {"id": 151, "name": "마이멜로디", "cat": "산리오", "series": "산리오"}, {"id": 152, "name": "쿠로미", "cat": "산리오", "series": "산리오"}, {"id": 153, "name": "시나모롤", "cat": "산리오", "series": "산리오"}, {"id": 154, "name": "폼폼푸린", "cat": "산리오", "series": "산리오"}, {"id": 155, "name": "포차코", "cat": "산리오", "series": "산리오"}, {"id": 156, "name": "리틀트윈스타", "cat": "산리오", "series": "산리오"}, {"id": 157, "name": "케로피", "cat": "산리오", "series": "산리오"}, {"id": 158, "name": "구데타마", "cat": "산리오", "series": "산리오"}, {"id": 159, "name": "마이스위트피아노", "cat": "산리오", "series": "산리오"}, {"id": 160, "name": "마론크림", "cat": "산리오", "series": "산리오"}, {"id": 161, "name": "본본리본", "cat": "산리오", "series": "산리오"}, {"id": 162, "name": "코기뮨", "cat": "산리오", "series": "산리오"}, {"id": 163, "name": "턱시도샘", "cat": "산리오", "series": "산리오"}, {"id": 164, "name": "페클", "cat": "산리오", "series": "산리오"}, {"id": 165, "name": "행요돈", "cat": "산리오", "series": "산리오"}, {"id": 166, "name": "우사하나", "cat": "산리오", "series": "산리오"}, {"id": 167, "name": "슈가번니즈", "cat": "산리오", "series": "산리오"}, {"id": 168, "name": "바츠마루", "cat": "산리오", "series": "산리오"}, {"id": 169, "name": "뽀로로", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 170, "name": "크롱", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 171, "name": "패티", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 172, "name": "루피", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 173, "name": "에디", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 174, "name": "포비", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 175, "name": "해리", "cat": "뽀로로", "series": "뽀롱뽀롱 뽀로로"}, {"id": 176, "name": "타요", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 177, "name": "로기", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 178, "name": "라니", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 179, "name": "가니", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 180, "name": "프랭크", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 181, "name": "패트", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 182, "name": "포코", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 183, "name": "빌리", "cat": "타요", "series": "꼬마버스 타요"}, {"id": 184, "name": "폴리", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 185, "name": "로이", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 186, "name": "엠버", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 187, "name": "헬리", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 188, "name": "마크", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 189, "name": "버키", "cat": "로보카폴리", "series": "로보카폴리"}, {"id": 190, "name": "호기", "cat": "핑크퐁", "series": "핑크퐁"}, {"id": 191, "name": "니니모", "cat": "핑크퐁", "series": "핑크퐁"}, {"id": 192, "name": "아기상어", "cat": "핑크퐁", "series": "핑크퐁"}, {"id": 193, "name": "토토로", "cat": "지브리", "series": "지브리"}, {"id": 194, "name": "키키", "cat": "지브리", "series": "지브리"}, {"id": 195, "name": "지지", "cat": "지브리", "series": "지브리"}, {"id": 196, "name": "도라에몽", "cat": "기타", "series": "캐릭터"}, {"id": 197, "name": "짱구", "cat": "기타", "series": "캐릭터"}, {"id": 198, "name": "스누피", "cat": "기타", "series": "캐릭터"}, {"id": 199, "name": "미니언즈", "cat": "기타", "series": "캐릭터"}];
+  var EMBED = null;              // null for dist, {id:dataURI} for single file
+  var TOTAL = CHARS.length;
+
+  var K_DRAW = 'soygacha_draw_v1';
+  var K_COL  = 'soygacha_collected_v1';
+
+  var CAT_COLORS = {
+    '티니핑':['#ff8fc4','#c98cff'],
+    '디즈니·픽사':['#7fb6ff','#a98cff'],
+    '산리오':['#ff9fb5','#ffc46b'],
+    '뽀로로':['#6fd0e8','#7fb6ff'],
+    '타요':['#ffb26b','#ff8f6b'],
+    '로보카폴리':['#7fd8a8','#68b8f0'],
+    '핑크퐁':['#ff9f7f','#ffd166'],
+    '지브리':['#8fc98f','#6fb0c8'],
+    '기타':['#c9a2ff','#8fb6ff']
+  };
+
+  function $(id){ return document.getElementById(id); }
+  function today(){
+    var d = new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  function load(k, def){
+    try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; }
+  }
+  function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  function imgSrc(id){ return EMBED ? EMBED[id] : 'images/'+String(id).padStart(3,'0')+'.jpg'; }
+
+  var draw = load(K_DRAW, {date:'', n:0});
+  var collected = load(K_COL, []);
+  if(!Array.isArray(collected)) collected = [];
+  var byId = {};
+  CHARS.forEach(function(c){ byId[c.id] = c; });
+
+  function rollDay(){
+    var t = today();
+    if(draw.date !== t){ draw = {date:t, n:0}; save(K_DRAW, draw); return true; }
+    return false;
+  }
+  rollDay();
+
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'visible'){ if(rollDay()) render(); }
+  });
+  setInterval(function(){ if(rollDay()) render(); }, 30000);
+
+  /* ---------------- background deco ---------------- */
+  (function bgDeco(){
+    var host = $('bg'), html = '';
+    var hearts = ['#ffc2de','#e5c8ff','#c6e2ff','#ffe1a8','#ffd0e8','#d9c6ff'];
+    for(var i=0;i<14;i++){
+      var s = 10 + Math.random()*16, x = Math.random()*100, y = Math.random()*100;
+      var c = hearts[i % hearts.length], dur = (8 + Math.random()*7).toFixed(1), del = (Math.random()*6).toFixed(1);
+      html += '<i style="left:'+x+'%;top:'+y+'%;width:'+s+'px;--dur:'+dur+'s;animation-delay:-'+del+'s">'+
+        heartSVG(c)+'</i>';
+    }
+    for(var j=0;j<5;j++){
+      var w = 60+Math.random()*90;
+      html += '<div class="cloud" style="left:'+(Math.random()*90)+'%;top:'+(Math.random()*100)+'%;width:'+w+'px;height:'+(w*0.45)+'px"></div>';
+    }
+    for(var k=0;k<10;k++){
+      html += '<i style="left:'+(Math.random()*100)+'%;top:'+(Math.random()*100)+'%;font-size:'+(8+Math.random()*8)+'px;--dur:'+((6+Math.random()*6).toFixed(1))+'s;animation-delay:-'+(Math.random()*5).toFixed(1)+'s;color:#fff;text-shadow:0 0 8px rgba(255,190,230,.9)">✦</i>';
+    }
+    host.innerHTML = html;
+  })();
+
+  function heartSVG(color){
+    return '<svg viewBox="0 0 32 29" width="100%" height="100%"><path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z" fill="'+color+'"/></svg>';
+  }
+  function starSVG(color){
+    return '<svg viewBox="0 0 24 24" width="100%" height="100%"><path d="M12 0l2.9 7.6L23 8.5l-6 5.4 1.9 8.1L12 17.7 5.1 22l1.9-8.1-6-5.4 8.1-.9z" fill="'+color+'"/></svg>';
+  }
+
+  /* ---------------- effects ---------------- */
+  var PALETTE = ['#ff8fc4','#ff5fa2','#e4a2ff','#b58cff','#ffd166','#ffb3d9','#c2e5ff','#ffffff'];
+  function burst(cx, cy, power){
+    power = power || 1;
+    var fx = $('fx');
+    var host = document.createDocumentFragment();
+    var n = Math.round(34*power);
+    for(var i=0;i<n;i++){
+      var el = document.createElement('div');
+      el.className = 'p';
+      var ang = (-Math.PI/2) + (Math.random()-0.5)*Math.PI*1.75;
+      var dist = (70 + Math.random()*150) * power;
+      var tx = Math.cos(ang)*dist, ty = Math.sin(ang)*dist;
+      var mx = tx*0.45 + (Math.random()-0.5)*70, my = ty*0.35 - 50 - Math.random()*60;
+      var size = 10 + Math.random()*18;
+      var color = PALETTE[(Math.random()*PALETTE.length)|0];
+      var dur = (0.95 + Math.random()*0.85).toFixed(2);
+      el.style.setProperty('--x', cx+'px');
+      el.style.setProperty('--y', cy+'px');
+      el.style.setProperty('--mx', mx.toFixed(0)+'px');
+      el.style.setProperty('--my', my.toFixed(0)+'px');
+      el.style.setProperty('--tx', tx.toFixed(0)+'px');
+      el.style.setProperty('--ty', ty.toFixed(0)+'px');
+      el.style.setProperty('--mr', ((Math.random()-0.5)*80).toFixed(0)+'deg');
+      el.style.setProperty('--rot', ((Math.random()-0.5)*260).toFixed(0)+'deg');
+      el.style.setProperty('--d', dur+'s');
+      el.style.width = size+'px'; el.style.height = size+'px';
+      el.style.animationDelay = (Math.random()*0.18).toFixed(2)+'s';
+      el.innerHTML = Math.random() < 0.75 ? heartSVG(color) : starSVG(color);
+      host.appendChild(el);
+      (function(node){ setTimeout(function(){ node.remove(); }, 2200); })(el);
+    }
+    // sparkle ring
+    for(var s=0;s<10;s++){
+      var sp = document.createElement('div');
+      sp.className='p';
+      var a = (s/10)*Math.PI*2;
+      var d2 = 90 + Math.random()*70;
+      sp.style.setProperty('--x', cx+'px'); sp.style.setProperty('--y', cy+'px');
+      sp.style.setProperty('--mx', (Math.cos(a)*d2*0.6).toFixed(0)+'px'); sp.style.setProperty('--my', (Math.sin(a)*d2*0.6).toFixed(0)+'px');
+      sp.style.setProperty('--tx', (Math.cos(a)*d2).toFixed(0)+'px'); sp.style.setProperty('--ty', (Math.sin(a)*d2).toFixed(0)+'px');
+      sp.style.setProperty('--mr','0deg'); sp.style.setProperty('--rot', (Math.random()*360).toFixed(0)+'deg');
+      sp.style.setProperty('--d', (0.8+Math.random()*0.5).toFixed(2)+'s');
+      sp.style.width='14px'; sp.style.height='14px';
+      sp.innerHTML = starSVG('#fff9c4');
+      host.appendChild(sp);
+      (function(node){ setTimeout(function(){ node.remove(); }, 1800); })(sp);
+    }
+    fx.appendChild(host);
+  }
+
+  var ambTimer = null;
+  function ambientOn(){
+    ambientOff();
+    ambTimer = setInterval(function(){
+      var fx = $('fx');
+      var el = document.createElement('div');
+      el.className = 'amb';
+      el.style.left = (6 + Math.random()*88) + 'vw';
+      el.style.setProperty('--dx', ((Math.random()-0.5)*90).toFixed(0)+'px');
+      el.style.animationDuration = (3.2 + Math.random()*2.2).toFixed(2)+'s';
+      var sz = 12 + Math.random()*18;
+      el.style.width = sz+'px'; el.style.height = sz+'px';
+      el.innerHTML = heartSVG(PALETTE[(Math.random()*PALETTE.length)|0]);
+      fx.appendChild(el);
+      setTimeout(function(){ el.remove(); }, 5600);
+    }, 480);
+  }
+  function ambientOff(){
+    if(ambTimer){ clearInterval(ambTimer); ambTimer = null; }
+  }
+
+  /* ---------------- render deck ---------------- */
+  var DECK = [];
+  var busy = false;
+
+  function remaining(){ return Math.max(0, 3 - draw.n); }
+  function uncollected(){ return CHARS.filter(function(c){ return collected.indexOf(c.id) < 0; }); }
+  function pickPool(pool, n){
+    var a = pool.slice();
+    for(var i=a.length-1;i>0;i--){ var j=(Math.random()*(i+1))|0; var t=a[i]; a[i]=a[j]; a[j]=t; }
+    return a.slice(0,n);
+  }
+
+  function render(){
+    var deck = $('deck'), done = $('doneBox');
+    var rem = remaining(), left = uncollected();
+
+    // HUD
+    var hearts = '';
+    for(var i=0;i<3;i++) hearts += (i < rem) ? '💗' : '🤍';
+    $('hearts').textContent = hearts;
+    $('cntText').textContent = rem + '번';
+    $('dexCnt').textContent = collected.length + '/' + TOTAL;
+    $('dexTotal').textContent = collected.length + ' / ' + TOTAL;
+
+    if(collected.length >= TOTAL){
+      deck.innerHTML = '';
+      deck.hidden = true;
+      done.hidden = true;
+      $('hint').hidden = true;
+      showComplete();
+      return;
+    }
+    $('hint').hidden = false;
+    deck.hidden = false;
+
+    if(rem <= 0){
+      deck.innerHTML = '';
+      done.hidden = false;
+      $('hint').textContent = '오늘의 뽑기는 모두 마쳤어요';
+      var nxt = left.length > 0 ? '내일 자정에 다시 3번 뽑을 수 있어요!' : '모든 친구를 만났어요!';
+      done.innerHTML = '<div class="panel"><div class="big">🌙</div><h2>오늘은 여기까지!</h2>' +
+        '<p>'+nxt+'<br>남은 친구 <b>'+left.length+'</b>명</p>' +
+        '<button type="button" class="btn ghost" id="openDex2">📖 도감 보기</button></div>';
+      var b = $('openDex2'); if(b) b.addEventListener('click', openDex);
+      return;
+    }
+    done.hidden = true;
+
+    var show = Math.min(rem, left.length, 3);
+    if(show <= 0){ deck.innerHTML = ''; return; }
+    DECK = pickPool(left, show);
+
+    deck.innerHTML = '';
+    var positions = show === 3
+      ? [{x:-98,r:-11,y:14},{x:0,r:0,y:-8},{x:98,r:11,y:14}]
+      : show === 2 ? [{x:-66,r:-9,y:6},{x:66,r:9,y:6}]
+      : [{x:0,r:0,y:4}];
+
+    for(var k=0;k<show;k++){
+      var ch = DECK[k];
+      var wrap = document.createElement('div');
+      wrap.className = 'cardwrap';
+      var p = positions[k];
+      wrap.style.transform = 'translate3d('+p.x+'px,'+p.y+'px,0) rotate('+p.r+'deg)';
+      wrap.style.zIndex = String(10+k);
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'card';
+      btn.setAttribute('aria-label', '카드 '+(k+1)+' 뒤집기');
+      btn.dataset.idx = k;
+      btn.innerHTML =
+        '<div class="face back">' +
+          '<div class="back-inner"></div>' +
+          '<span class="spark" style="left:18%;top:16%">✦</span>' +
+          '<span class="spark" style="right:16%;top:24%;animation-delay:.6s">✦</span>' +
+          '<span class="spark" style="left:24%;bottom:18%;animation-delay:1.1s">✦</span>' +
+          '<span class="spark" style="right:22%;bottom:26%;animation-delay:1.6s">✦</span>' +
+          '<div class="mark">' +
+            '<div class="gem"><svg viewBox="0 0 32 29"><path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z" fill="url(#g1)"/><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#ffc0e0"/><stop offset="1" stop-color="#d5b8ff"/></linearGradient></defs></svg></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="face front"><img src="'+imgSrc(ch.id)+'" alt=""><div class="nm">'+esc(ch.name)+'</div></div>';
+
+      btn.addEventListener('click', function(ev){ onTapCard(ev.currentTarget); });
+      wrap.appendChild(btn);
+      deck.appendChild(wrap);
+
+      (function(node){
+        node.addEventListener('pointerdown', function(){ if(!busy) node.classList.add('lift'); });
+        node.addEventListener('pointerup', function(){ node.classList.remove('lift'); });
+        node.addEventListener('pointercancel', function(){ node.classList.remove('lift'); });
+        node.addEventListener('pointerleave', function(){ node.classList.remove('lift'); });
+      })(wrap);
+    }
+  }
+
+  function onTapCard(btn){
+    if(busy) return;
+    if(btn.classList.contains('flipped')) return;
+    busy = true;
+    var idx = parseInt(btn.dataset.idx, 10);
+    var ch = DECK[idx];
+    if(!ch){ busy = false; return; }
+
+    var rect = btn.getBoundingClientRect();
+    var cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+
+    btn.classList.add('flipped');
+    burst(cx, cy, 0.85);
+    if(navigator.vibrate){ try{ navigator.vibrate([12, 30, 18]); }catch(e){} }
+
+    setTimeout(function(){
+      burst(cx, cy, 1);
+      reveal(ch);
+    }, 320);
+  }
+
+  /* ---------------- reveal ---------------- */
+  var lastChar = null;
+  function reveal(ch){
+    lastChar = ch;
+    var colors = CAT_COLORS[ch.cat] || ['#ff8fc4','#c98cff'];
+    var photo = $('photo');
+    photo.style.setProperty('--c1', colors[0]);
+    photo.style.setProperty('--c2', colors[1]);
+    $('ribbon').textContent = ch.series;
+    $('rName').textContent = ch.name;
+    $('rSeries').textContent = ch.cat;
+    var im = $('rImg');
+    im.src = imgSrc(ch.id);
+    im.alt = ch.name;
+    var leftAfter = TOTAL - collected.length;
+    $('rMsg').textContent = (leftAfter <= 1) ? '마지막 친구까지 딱 ' + leftAfter + '명!' : '와~ 새로운 친구를 만났어요!';
+
+    var first = collected.length === 0;
+    if(collected.indexOf(ch.id) < 0) collected.push(ch.id);
+    draw.n = Math.min(3, draw.n + 1);
+    save(K_COL, collected);
+    save(K_DRAW, draw);
+
+    // reveal burst from screen center
+    var vw = window.innerWidth, vh = window.innerHeight;
+    burst(vw/2, vh*0.42, 1.35);
+
+    $('reveal').hidden = false;
+    ambientOn();
+    $('rClose').textContent = (remaining() > 0 && collected.length < TOTAL) ? '좋아! 다음 카드' : '도감에 담기';
+    $('rClose').focus({preventScroll:true});
+    setTimeout(function(){ burst(vw/2, vh*0.42, 0.9); }, 420);
+  }
+
+  $('rClose').addEventListener('click', function(){
+    $('reveal').hidden = true;
+    ambientOff();
+    var vw = window.innerWidth, vh = window.innerHeight;
+    burst(vw/2, vh*0.5, 0.6);
+    busy = false;
+    render();
+    if(collected.length >= TOTAL) showComplete();
+  });
+
+  /* ---------------- dex ---------------- */
+  var dexCat = '전체';
+  function catList(){
+    var seen = {}, out = ['전체'];
+    CHARS.forEach(function(c){ if(!seen[c.cat]){ seen[c.cat] = 1; out.push(c.cat); } });
+    return out;
+  }
+  function openDex(){
+    ambientOff();
+    var tabs = $('tabs');
+    tabs.innerHTML = '';
+    catList().forEach(function(cat){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'tab' + (cat === dexCat ? ' on' : '');
+      var n = (cat === '전체') ? collected.length : CHARS.filter(function(c){ return c.cat === cat && collected.indexOf(c.id) >= 0; }).length;
+      var tot = (cat === '전체') ? TOTAL : CHARS.filter(function(c){ return c.cat === cat; }).length;
+      b.textContent = cat + ' ' + n + '/' + tot;
+      b.addEventListener('click', function(){ dexCat = cat; openDex(); });
+      tabs.appendChild(b);
+    });
+    var grid = $('grid');
+    grid.innerHTML = '';
+    var shown = 0;
+    CHARS.forEach(function(c){
+      if(dexCat !== '전체' && c.cat !== dexCat) return;
+      shown++;
+      var got = collected.indexOf(c.id) >= 0;
+      var cell = document.createElement('div');
+      cell.className = 'cell' + (got ? '' : ' locked');
+      if(got){
+        cell.innerHTML = '<img loading="lazy" src="'+imgSrc(c.id)+'" alt="'+esc(c.name)+'"><div class="cn">'+esc(c.name)+'</div>';
+      } else {
+        cell.innerHTML = '<span>?</span>';
+      }
+      grid.appendChild(cell);
+    });
+    if(!shown) grid.innerHTML = '<div class="empty">아직 모은 친구가 없어요.<br>카드를 눌러 첫 친구를 만나보세요!</div>';
+    $('dex').hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  $('openDex').addEventListener('click', openDex);
+  $('dexClose').addEventListener('click', function(){ $('dex').hidden = true; document.body.style.overflow=''; });
+  $('dex').addEventListener('click', function(e){ if(e.target === $('dex')){ $('dex').hidden = true; document.body.style.overflow=''; } });
+
+  /* ---------------- complete ---------------- */
+  var completedShown = false;
+  function showComplete(){
+    if(completedShown) return;
+    completedShown = true;
+    $('complete').hidden = false;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    burst(vw/2, vh*0.45, 1.6);
+    setTimeout(function(){ burst(vw*0.3, vh*0.4, 0.9); burst(vw*0.7, vh*0.5, 0.9); }, 380);
+    if(navigator.vibrate){ try{ navigator.vibrate([20,40,20,40,60]); }catch(e){} }
+  }
+  $('resetAll').addEventListener('click', function(){
+    if(!window.confirm('도감을 비우고 처음부터 다시 모을까요?')) return;
+    collected = [];
+    draw = {date: today(), n: 0};
+    save(K_COL, collected); save(K_DRAW, draw);
+    completedShown = false;
+    $('complete').hidden = true;
+    render();
+    var vw = window.innerWidth, vh = window.innerHeight;
+    burst(vw/2, vh*0.4, 1.1);
+  });
+
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+
+  // preload neighbours
+  setTimeout(function(){
+    uncollected().slice(0, 6).forEach(function(c){ var i = new Image(); i.src = imgSrc(c.id); });
+  }, 300);
+
+  window.__dbg = function(){ return {deck: DECK.map(function(c){ return c.id; }), collected: collected.slice(), draw: {date: draw.date, n: draw.n}}; };
+
+  render();
+  if(collected.length >= TOTAL) showComplete();
+})();
+</script>
+</body>
+</html>
