@@ -224,6 +224,7 @@
     display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
     padding:calc(env(safe-area-inset-top,0px) + 54px) 20px calc(env(safe-area-inset-bottom,0px) + 28px);
     animation:fadein .2s ease both}
+  .dinner{width:100%;display:flex;flex-direction:column;align-items:center;margin:auto 0}
   .dclose{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:14px;z-index:6;
     border:0;background:#FFF2F8;color:#C2568C;width:36px;height:36px;border-radius:50%;font-size:15px;line-height:1;
     display:grid;place-items:center;cursor:pointer;touch-action:manipulation;
@@ -301,13 +302,15 @@
 <div class="modal" id="detail" hidden>
   <div class="detailwrap" id="detailWrap" role="dialog" aria-modal="true" aria-labelledby="dName">
     <button type="button" class="dclose" id="dClose" aria-label="닫기">✕</button>
-    <div class="dphoto"><img id="dImg" alt=""><div class="holo"></div></div>
-    <div class="dhead">
-      <h2 id="dName"></h2>
-      <span class="dseries" id="dSeries"></span>
+    <div class="dinner">
+      <div class="dphoto"><img id="dImg" alt=""><div class="holo"></div></div>
+      <div class="dhead">
+        <h2 id="dName"></h2>
+        <span class="dseries" id="dSeries"></span>
+      </div>
+      <p class="ddesc" id="dDesc"></p>
+      <button type="button" class="btn ghost" id="dOk">닫기</button>
     </div>
-    <p class="ddesc" id="dDesc"></p>
-    <button type="button" class="btn ghost" id="dOk">닫기</button>
   </div>
 </div>
 
