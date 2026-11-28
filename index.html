@@ -51,6 +51,9 @@
   .pill.dex:active{box-shadow:0 1px 4px rgba(170,140,220,.2)}
   .pill b{font-size:14px;font-weight:900}
   .pill .heartcount{font-size:13px;letter-spacing:.5px}
+  .pill.snd{padding:9px 12px;font-size:14px;line-height:1;border-color:#FFEAF3;color:#C2568C;
+    box-shadow:0 3px 10px rgba(233,160,196,.14)}
+  .pill.snd.off{color:#BCA8B8;border-color:#F2E9F1;box-shadow:0 2px 8px rgba(200,180,200,.12)}
 
   /* ---------- main ---------- */
   main{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -135,6 +138,97 @@
     18%{opacity:.95}
     100%{opacity:0;transform:translate3d(var(--dx),-102vh,0) scale(1.15) rotate(26deg)}
   }
+
+  /* ---------- wish cutscene ---------- */
+  #wishFx{position:fixed;inset:0;z-index:45;overflow:hidden;pointer-events:none;opacity:0;contain:layout paint;
+    background:linear-gradient(180deg,#FFF8FD 0%,#F7F1FF 46%,#EFF8FF 78%,#FFF7EA 100%);
+    transition:opacity .22s ease;will-change:opacity}
+  #wishFx.on{opacity:1;pointer-events:auto}
+  #wishFx.fade{opacity:0}
+  #wishFx .wsky{position:absolute;inset:0;opacity:0;animation:wskyIn .35s ease forwards;
+    background:
+      radial-gradient(58% 38% at 50% 34%,#FFFFFF 0%,rgba(255,246,252,.92) 42%,rgba(255,246,252,0) 76%),
+      radial-gradient(48% 34% at 16% 14%,rgba(255,206,236,.72),rgba(255,206,236,0) 72%),
+      radial-gradient(46% 32% at 86% 18%,rgba(220,208,255,.68),rgba(220,208,255,0) 72%),
+      radial-gradient(62% 40% at 52% 98%,rgba(255,236,190,.78),rgba(255,236,190,0) 74%)}
+  @keyframes wskyIn{to{opacity:1}}
+  #wishFx .waura{position:absolute;left:50%;top:50%;width:120vmax;height:120vmax;margin:-60vmax 0 0 -60vmax;
+    border-radius:50%;filter:blur(36px);opacity:0;will-change:transform,opacity;
+    background:conic-gradient(from 0deg,rgba(255,208,238,.55),rgba(255,244,200,.5),rgba(212,236,255,.55),rgba(228,210,255,.6),rgba(255,208,238,.55));
+    animation:wauraIn .5s ease forwards,spin 12s linear infinite}
+  @keyframes wauraIn{to{opacity:.7}}
+
+  #wishFx .wmeteor{position:absolute;left:50%;top:50%;width:0;height:0;opacity:0;will-change:transform,opacity}
+  #wishFx.on .wmeteor{animation:wfall .76s cubic-bezier(.34,.12,.66,.9) forwards}
+  @keyframes wfall{
+    0%{transform:translate3d(0,-46vh,0) scale(.55);opacity:0}
+    9%{opacity:1}
+    76%{transform:translate3d(0,-2vh,0) scale(1) rotate(6deg);opacity:1}
+    100%{transform:translate3d(0,0,0) scale(1.3) rotate(0deg);opacity:1}}
+  #wishFx .wcore{position:absolute;left:-28px;top:-28px;width:56px;height:56px;border-radius:50%;
+    background:radial-gradient(circle at 44% 42%,#FFFFFF 0%,#FFFDF0 22%,#FFF0B8 46%,#FFC861 74%,rgba(255,190,130,0) 88%);
+    box-shadow:0 0 24px rgba(255,214,140,.98),0 0 60px rgba(255,190,225,.8),0 0 110px rgba(255,255,255,.95)}
+  #wishFx .wtail{position:absolute;left:-9px;bottom:6px;width:18px;height:44vh;border-radius:14px 14px 0 0;
+    transform:rotate(6deg);transform-origin:bottom center;filter:blur(2px);
+    background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,226,168,.35) 30%,rgba(255,224,247,.7) 62%,rgba(255,255,255,.98) 100%);
+    box-shadow:0 0 22px rgba(255,228,180,.55)}
+  #wishFx .wglow{position:absolute;left:-24px;bottom:0;width:48px;height:62vh;border-radius:20px;
+    transform:rotate(6deg);transform-origin:bottom center;filter:blur(10px);
+    background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(214,232,255,.4) 36%,rgba(255,214,240,.62) 72%,rgba(255,246,214,.95) 100%);box-shadow:0 0 40px rgba(255,225,190,.5)}
+
+  #wishFx .wcircle{position:absolute;left:50%;top:50%;width:300px;height:300px;margin:-150px 0 0 -150px;opacity:0;will-change:transform,opacity;
+    border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.85) 0%,rgba(255,242,252,.42) 38%,rgba(255,238,206,.22) 56%,rgba(255,255,255,0) 72%)}
+  #wishFx.on .wcircle{animation:wcirc .82s cubic-bezier(.2,.8,.3,1) forwards}
+  @keyframes wcirc{0%{transform:scale(.1) rotate(-50deg);opacity:0}28%{opacity:.85}74%{transform:scale(1) rotate(8deg);opacity:1}100%{transform:scale(1.12) rotate(16deg);opacity:0}}
+  #wishFx .wcircle b{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(255,178,228,.95);
+    box-shadow:0 0 22px rgba(255,150,212,.7),0 0 44px rgba(255,255,255,.9),inset 0 0 26px rgba(255,244,255,.95)}
+  #wishFx .wcircle b:nth-child(2){inset:30px;border-style:dashed;border-color:rgba(255,214,132,.98);animation:spin 7s linear infinite;
+    box-shadow:0 0 20px rgba(255,204,110,.65),inset 0 0 20px rgba(255,252,236,.9)}
+  #wishFx .wcircle b:nth-child(3){inset:62px;border-color:rgba(176,214,255,.98);animation:spin 5s linear infinite reverse;
+    box-shadow:0 0 18px rgba(150,200,255,.6),inset 0 0 18px rgba(240,250,255,.9)}
+  #wishFx .wpillar{position:absolute;left:50%;top:50%;width:190px;height:66vh;margin:-33vh 0 0 -95px;opacity:0;
+    border-radius:50% 50% 40% 40%;filter:blur(9px);will-change:transform,opacity;
+    background:linear-gradient(to top,rgba(255,255,255,0),rgba(255,246,206,.6) 42%,rgba(255,255,255,1))}
+  #wishFx.on .wpillar{animation:wpil .82s cubic-bezier(.2,.8,.3,1) forwards}
+  @keyframes wpil{0%{transform:scaleY(.08) scaleX(.5);opacity:0}30%{opacity:.55}78%{transform:scaleY(1) scaleX(1);opacity:.9}100%{transform:scaleY(1.25) scaleX(.35);opacity:0}}
+
+  #wishFx .wflash{position:absolute;inset:0;opacity:0;pointer-events:none;
+    background:radial-gradient(circle at 50% 50%,#FFFFFF 0%,#FFF4CE 20%,rgba(255,216,240,.88) 44%,rgba(255,246,255,.3) 60%,rgba(255,255,255,0) 72%)}
+  #wishFx.on.boom .wflash{animation:wflash .55s ease-out forwards}
+  @keyframes wflash{0%{opacity:0;transform:scale(.72)}10%{opacity:1;transform:scale(1)}58%{opacity:.45;transform:scale(1.04)}100%{opacity:0;transform:scale(1.12)}}
+
+  #wishFx .wring{position:absolute;left:50%;top:50%;width:130px;height:130px;margin:-65px 0 0 -65px;border-radius:50%;
+    border:4px solid #FFB13D;opacity:0;will-change:transform,opacity;
+    box-shadow:0 0 30px rgba(255,170,40,.9),0 0 60px rgba(255,240,190,.9),inset 0 0 30px rgba(255,255,255,1)}
+  #wishFx .wring.d2{border-color:#FF7CC0;box-shadow:0 0 30px rgba(255,110,190,.85),0 0 60px rgba(255,220,248,.9),inset 0 0 26px rgba(255,255,255,1)}
+  #wishFx .wring.d3{width:90px;height:90px;margin:-45px 0 0 -45px;border-color:#8CC8FF;box-shadow:0 0 26px rgba(120,190,255,.85),inset 0 0 22px rgba(255,255,255,1)}
+  #wishFx.on.boom .wring{animation:wring .62s cubic-bezier(.1,.7,.3,1) forwards}
+  #wishFx.on.boom .wring.d2{animation:wring .72s cubic-bezier(.1,.7,.3,1) .08s forwards}
+  #wishFx.on.boom .wring.d3{animation:wring .55s cubic-bezier(.1,.7,.3,1) .04s forwards}
+  @keyframes wring{0%{transform:scale(.3);opacity:0}10%{opacity:1}58%{opacity:.92}100%{transform:scale(4.4);opacity:0}}
+
+  #wishFx .wrays{position:absolute;left:50%;top:50%;width:380px;height:380px;margin:-190px 0 0 -190px;border-radius:50%;
+    opacity:0;will-change:transform,opacity;
+    background:repeating-conic-gradient(from 0deg,rgba(255,244,198,.98) 0deg 2deg,rgba(255,255,255,0) 2deg 9deg);
+    -webkit-mask:radial-gradient(circle,rgba(0,0,0,.9) 16%,rgba(0,0,0,0) 60%);
+    mask:radial-gradient(circle,rgba(0,0,0,.9) 16%,rgba(0,0,0,0) 60%)}
+  #wishFx.on.boom .wrays{animation:wrays .66s ease-out forwards}
+  @keyframes wrays{0%{transform:scale(.3) rotate(-20deg);opacity:0}16%{opacity:1}72%{opacity:.9}100%{transform:scale(2.4) rotate(24deg);opacity:0}}
+
+  #wishFx .wspk,#wishFx .wbp{position:absolute;left:50%;top:50%;margin:-8px 0 0 -8px;opacity:0;will-change:transform,opacity}
+  #wishFx .wspk{animation:wspk .82s cubic-bezier(.5,0,.9,.55) both}
+  @keyframes wspk{
+    0%{transform:translate3d(var(--dx),-46vh,0) scale(.32) rotate(0);opacity:0}
+    12%{opacity:1}
+    82%{opacity:.95}
+    100%{transform:translate3d(var(--ex),0,0) scale(1.05) rotate(var(--rz));opacity:0}}
+  #wishFx .wbp{animation:wbp .9s cubic-bezier(.14,.76,.24,1) both}
+  @keyframes wbp{
+    0%{transform:translate3d(0,0,0) scale(.2) rotate(0);opacity:0}
+    8%{opacity:1}
+    62%{transform:translate3d(calc(var(--tx)*.78),calc(var(--ty)*.78),0) scale(1) rotate(var(--r1));opacity:1}
+    100%{transform:translate3d(var(--tx),var(--ty),0) scale(.32) rotate(var(--r2));opacity:0}}
+  #wishFx .wspk svg,#wishFx .wbp svg{display:block;width:100%;height:100%;filter:drop-shadow(0 2px 5px rgba(255,150,200,.35))}
 
   /* ---------- modals ---------- */
   .modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
@@ -257,6 +351,7 @@
   <div class="hud">
     <div class="pill" id="chances"><span class="heartcount" id="hearts">❤️❤️❤️</span><b id="cntText">3</b></div>
     <button type="button" class="pill dex" id="openDex">📖 도감 <b id="dexCnt">0/421</b></button>
+    <button type="button" class="pill snd" id="sndBtn" aria-label="소리 끄기" aria-pressed="true">🔊</button>
   </div>
 </header>
 
@@ -267,6 +362,23 @@
 </main>
 
 <div class="fx" id="fx"></div>
+
+<!-- wish cutscene -->
+<div class="wish" id="wishFx" hidden aria-hidden="true">
+  <div class="wsky"></div>
+  <div class="waura"></div>
+  <div class="wpillar"></div>
+  <div class="wcircle"><b></b><b></b><b></b></div>
+  <div class="wmeteor">
+    <span class="wglow"></span><span class="wtail"></span><span class="wcore"></span>
+  </div>
+  <div class="wflash"></div>
+  <div class="wrays"></div>
+  <div class="wring"></div>
+  <div class="wring d2"></div>
+  <div class="wring d3"></div>
+  <div class="wparts" id="wParts"></div>
+</div>
 
 <!-- reveal -->
 <div class="modal" id="reveal" hidden>
@@ -360,6 +472,218 @@
   }
   function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
   function imgSrc(id){ return EMBED ? EMBED[id] : 'images/'+String(id).padStart(3,'0')+'.jpg'; }
+
+  /* ---------------- sound engine (Web Audio, 0KB) ---------------- */
+  var K_SND = 'soygacha_sound_v1';
+  var SND = (function(){
+    var ctx = null, master = null, wetIn = null, nbuf = null, ON = true, pending = null;
+    try{ if(localStorage.getItem(K_SND) === 'off') ON = false; }catch(e){}
+
+    var F = {
+      C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88,
+      C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99, A5:880.00, B5:987.77,
+      C6:1046.50, D6:1174.66, E6:1318.51, F6:1396.91, G6:1567.98, A6:1760.00, B6:1975.53, C7:2093.00
+    };
+
+    function setup(){
+      if(ctx) return ctx;
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return null;
+      try{ ctx = new AC(); }catch(e){ ctx = null; return null; }
+      master = ctx.createGain();
+      master.gain.value = 0.72;
+      master.connect(ctx.destination);
+      /* sparkly delay tail (reverb feel) */
+      var d = ctx.createDelay(0.6); d.delayTime.value = 0.15;
+      var fb = ctx.createGain(); fb.gain.value = 0.2;
+      var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3000; lp.Q.value = 0.4;
+      var wet = ctx.createGain(); wet.gain.value = 0.3;
+      d.connect(lp); lp.connect(fb); fb.connect(d); lp.connect(wet); wet.connect(master);
+      wetIn = d;
+      /* noise source */
+      var sr = ctx.sampleRate, len = Math.floor(sr*1.4);
+      nbuf = ctx.createBuffer(1, len, sr);
+      var ch = nbuf.getChannelData(0);
+      var tail = len*0.9;
+      for(var i=0;i<len;i++){
+        var fade = i > tail ? (1 - (i-tail)/(len-tail)) : 1;
+        ch[i] = (Math.random()*2-1)*fade;
+      }
+      return ctx;
+    }
+
+    function can(){ return ON && !!setup(); }
+
+    function play(build){
+      if(!can()) return;
+      if(ctx.state === 'running'){
+        try{ build(ctx, ctx.currentTime + 0.02); }catch(e){}
+        pending = null;
+        return;
+      }
+      pending = build;
+      try{ ctx.resume(); }catch(e){}
+    }
+
+    function unlock(){
+      if(!can()) return;
+      if(ctx.state === 'running'){
+        if(pending){ var p = pending; pending = null; try{ p(ctx, ctx.currentTime + 0.02); }catch(e){} }
+        return;
+      }
+      try{
+        var pr = ctx.resume();
+        if(pr && pr.then) pr.then(function(){
+          if(ctx.state === 'running' && pending){
+            var q = pending; pending = null;
+            try{ q(ctx, ctx.currentTime + 0.02); }catch(e){}
+          }
+        });
+      }catch(e){}
+    }
+
+    function bell(c, f, t, vol, dur){
+      if(dur === undefined) dur = 0.95;
+      var g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t+0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      var o1 = c.createOscillator(); o1.type = 'sine'; o1.frequency.setValueAtTime(f, t);
+      var o2 = c.createOscillator(); o2.type = 'sine'; o2.frequency.setValueAtTime(f*2.0031, t);
+      var g2 = c.createGain(); g2.gain.value = 0.26;
+      var o3 = c.createOscillator(); o3.type = 'sine'; o3.frequency.setValueAtTime(f*3.012, t);
+      var g3 = c.createGain(); g3.gain.value = 0.09;
+      o1.connect(g); o2.connect(g2); g2.connect(g); o3.connect(g3); g3.connect(g);
+      g.connect(master); if(wetIn) g.connect(wetIn);
+      o1.start(t); o2.start(t); o3.start(t);
+      o1.stop(t+dur+0.03); o2.stop(t+Math.min(dur,0.55)); o3.stop(t+Math.min(dur,0.2));
+    }
+
+    function harp(c, f, t, vol, dur){
+      var g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t+0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      var lp = c.createBiquadFilter(); lp.type = 'lowpass';
+      lp.frequency.setValueAtTime(Math.min(f*3.4, 7200), t);
+      lp.frequency.exponentialRampToValueAtTime(Math.max(420, f*1.5), t+dur);
+      var o = c.createOscillator(); o.type = 'triangle'; o.frequency.setValueAtTime(f, t);
+      var o2 = c.createOscillator(); o2.type = 'sine'; o2.frequency.setValueAtTime(f*2.001, t);
+      var g2 = c.createGain(); g2.gain.value = 0.34;
+      o.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(g);
+      g.connect(master); if(wetIn) g.connect(wetIn);
+      o.start(t); o2.start(t); o.stop(t+dur+0.03); o2.stop(t+dur*0.6);
+    }
+
+    function pad(c, f, t, vol, dur){
+      var g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(vol, t+0.16);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      g.connect(master); if(wetIn) g.connect(wetIn);
+      [1, 1.004, 0.5].forEach(function(mul, i){
+        var o = c.createOscillator(); o.type = 'triangle'; o.frequency.setValueAtTime(f*mul, t);
+        var og = c.createGain(); og.gain.value = i === 2 ? 0.5 : 1;
+        o.connect(og); og.connect(g); o.start(t); o.stop(t+dur+0.03);
+      });
+    }
+
+    function shimmer(c, t, dur, vol, f0, f1, q){
+      var s = c.createBufferSource(); s.buffer = nbuf;
+      var bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = q || 1.1;
+      bp.frequency.setValueAtTime(f0, t);
+      bp.frequency.exponentialRampToValueAtTime(f1, t+dur);
+      var g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t+dur*0.55);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      s.connect(bp); bp.connect(g); g.connect(master); if(wetIn) g.connect(wetIn);
+      s.start(t); s.stop(t+dur+0.05);
+    }
+
+    function hit(c, t, dur, vol, freq, type, q){
+      var s = c.createBufferSource(); s.buffer = nbuf;
+      var f = c.createBiquadFilter(); f.type = type || 'highpass';
+      f.frequency.value = freq; f.Q.value = q || 0.7;
+      var g = c.createGain();
+      g.gain.setValueAtTime(vol, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      s.connect(f); f.connect(g); g.connect(master); if(wetIn) g.connect(wetIn);
+      s.start(t); s.stop(t+dur+0.04);
+    }
+
+    var P = {
+      welcomeDraw: function(c, t){
+        bell(c, F.C5, t, 0.15, 1.3);
+        bell(c, F.E5, t+0.09, 0.15, 1.3);
+        bell(c, F.G5, t+0.18, 0.15, 1.35);
+        bell(c, F.C6, t+0.27, 0.16, 1.5);
+        bell(c, F.G6, t+0.36, 0.055, 0.8);
+        bell(c, F.C7, t+0.43, 0.04, 0.7);
+        shimmer(c, t+0.02, 0.9, 0.03, 1400, 6200, 1.5);
+      },
+      welcomeEnd: function(c, t){
+        bell(c, F.G5, t, 0.13, 1.8);
+        bell(c, F.E5, t+0.19, 0.12, 1.9);
+        bell(c, F.C5, t+0.38, 0.13, 2.2);
+        pad(c, F.C4, t+0.3, 0.05, 1.9);
+        pad(c, F.G4, t+0.3, 0.035, 1.9);
+      },
+      sweep: function(c, t){
+        shimmer(c, t, 0.62, 0.1, 520, 6800, 0.9);
+        bell(c, F.C6, t+0.02, 0.05, 0.38);
+        bell(c, F.E6, t+0.11, 0.05, 0.38);
+        bell(c, F.G6, t+0.2, 0.055, 0.4);
+        bell(c, F.C7, t+0.34, 0.05, 0.45);
+      },
+      boom: function(c, t){
+        hit(c, t, 0.9, 0.08, 2400, 'highpass', 0.6);
+        shimmer(c, t+0.02, 0.55, 0.032, 6400, 1500, 2.0);
+        var arp = ['C5','E5','G5','C6','E6','G6','C7'];
+        for(var i=0;i<arp.length;i++) harp(c, F[arp[i]], t+i*0.042, 0.08, 1.05);
+        bell(c, F.C6, t+0.28, 0.12, 1.7);
+        bell(c, F.E6, t+0.30, 0.115, 1.7);
+        bell(c, F.G6, t+0.32, 0.11, 1.7);
+        bell(c, F.C5, t+0.28, 0.1, 1.9);
+        pad(c, F.C4, t+0.26, 0.06, 1.5);
+        pad(c, F.G4, t+0.26, 0.045, 1.5);
+      },
+      dexOpen: function(c, t){
+        bell(c, F.A5, t, 0.13, 0.5);
+        bell(c, F.E6, t+0.06, 0.115, 0.62);
+      },
+      dexCard: function(c, t){
+        bell(c, F.C6, t, 0.11, 0.62);
+        bell(c, F.G6, t+0.05, 0.08, 0.8);
+        bell(c, F.C7, t+0.1, 0.05, 0.6);
+      },
+      close: function(c, t){
+        bell(c, F.G4, t, 0.1, 0.2);
+        hit(c, t, 0.09, 0.045, 520, 'lowpass', 0.9);
+      }
+    };
+
+    return {
+      isOn: function(){ return ON; },
+      set: function(v){
+        ON = !!v;
+        try{ localStorage.setItem(K_SND, ON ? 'on' : 'off'); }catch(e){}
+        if(ON){ pending = null; play(P.dexOpen); }
+      },
+      unlock: unlock,
+      welcome: function(kind){ play(kind === 'end' ? P.welcomeEnd : P.welcomeDraw); },
+      sweep: function(){ play(P.sweep); },
+      boom: function(){ play(P.boom); },
+      dexOpen: function(){ play(P.dexOpen); },
+      dexCard: function(){ play(P.dexCard); },
+      close: function(){ play(P.close); }
+    };
+  })();
+
+  /* iOS: resume audio on first touch */
+  ['pointerdown','touchstart','keydown'].forEach(function(ev){
+    document.addEventListener(ev, function(){ SND.unlock(); }, {passive:true, capture:true});
+  });
 
   var draw = load(K_DRAW, {date:'', n:0});
   var collected = load(K_COL, []);
@@ -478,6 +802,95 @@
     if(ambTimer){ clearInterval(ambTimer); ambTimer = null; }
   }
 
+  /* ---------------- wish cutscene ---------------- */
+  var wishChar = null, wishOpen = false, wishStart = 0;
+  var wishT = [null, null, null];
+
+  function wishSparks(){
+    var host = $('wParts');
+    var cols = ['#FFE7B0','#FFD9F0','#D9E7FF','#FFF6C9','#FFFFFF','#E7D6FF'];
+    var frag = document.createDocumentFragment();
+    for(var i=0;i<16;i++){
+      var s = document.createElement('i');
+      s.className = 'wspk';
+      var dx = (Math.random()-0.5)*130;
+      s.style.setProperty('--dx', dx.toFixed(0)+'px');
+      s.style.setProperty('--ex', (dx*0.5).toFixed(0)+'px');
+      s.style.setProperty('--rz', ((Math.random()-0.5)*220).toFixed(0)+'deg');
+      s.style.animationDelay = (Math.random()*0.42).toFixed(2)+'s';
+      var sz = (6 + Math.random()*9).toFixed(0);
+      s.style.width = sz+'px'; s.style.height = sz+'px';
+      var c = cols[(Math.random()*cols.length)|0];
+      s.innerHTML = Math.random() < 0.55 ? starSVG(c) : heartSVG(c);
+      frag.appendChild(s);
+    }
+    host.appendChild(frag);
+  }
+
+  function wishBurst(){
+    var host = $('wParts');
+    var frag = document.createDocumentFragment();
+    for(var i=0;i<30;i++){
+      var a = Math.random()*Math.PI*2;
+      var d = 90 + Math.random()*230;
+      var el = document.createElement('i');
+      el.className = 'wbp';
+      var sz = 9 + Math.random()*16;
+      el.style.width = sz+'px'; el.style.height = sz+'px';
+      el.style.setProperty('--tx', (Math.cos(a)*d).toFixed(0)+'px');
+      el.style.setProperty('--ty', (Math.sin(a)*d*0.9 - 18).toFixed(0)+'px');
+      el.style.setProperty('--r1', ((Math.random()-0.5)*90).toFixed(0)+'deg');
+      el.style.setProperty('--r2', ((Math.random()-0.5)*300).toFixed(0)+'deg');
+      el.style.animationDuration = (0.78 + Math.random()*0.4).toFixed(2)+'s';
+      el.style.animationDelay = (Math.random()*0.08).toFixed(2)+'s';
+      var c = PALETTE[(Math.random()*PALETTE.length)|0];
+      el.innerHTML = Math.random() < 0.6 ? heartSVG(c) : starSVG(c);
+      frag.appendChild(el);
+    }
+    host.appendChild(frag);
+  }
+
+  function playWish(ch){
+    wishChar = ch;
+    var w = $('wishFx');
+    $('wParts').innerHTML = '';
+    w.hidden = false;
+    w.classList.remove('on','boom','fade');
+    void w.offsetWidth;
+    w.classList.add('on');
+    wishOpen = true;
+    wishStart = Date.now();
+    wishSparks();
+
+    wishT[0] = setTimeout(function(){
+      w.classList.add('boom');
+      wishBurst();
+      SND.boom();
+      if(navigator.vibrate){ try{ navigator.vibrate([18,26,40]); }catch(e){} }
+    }, 750);
+    wishT[1] = setTimeout(function(){ w.classList.add('fade'); }, 1100);
+    wishT[2] = setTimeout(function(){ finishWish(); }, 1260);
+  }
+
+  function finishWish(){
+    if(!wishOpen) return;
+    wishOpen = false;
+    for(var i=0;i<wishT.length;i++){ clearTimeout(wishT[i]); wishT[i] = null; }
+    var w = $('wishFx');
+    w.hidden = true;
+    w.classList.remove('on','boom','fade');
+    $('wParts').innerHTML = '';
+    var ch = wishChar; wishChar = null;
+    if(ch) reveal(ch);
+  }
+
+  $('wishFx').addEventListener('pointerup', function(){
+    if(wishOpen && Date.now() - wishStart > 160) finishWish();
+  });
+  $('wishFx').addEventListener('click', function(){
+    if(wishOpen && Date.now() - wishStart > 160) finishWish();
+  });
+
   /* ---------------- render deck ---------------- */
   var DECK = [];
   var busy = false;
@@ -587,14 +1000,13 @@
     var rect = btn.getBoundingClientRect();
     var cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
 
+    SND.unlock();
     btn.classList.add('flipped');
-    burst(cx, cy, 0.85);
-    if(navigator.vibrate){ try{ navigator.vibrate([12, 30, 18]); }catch(e){} }
+    burst(cx, cy, 0.7);
+    SND.sweep();
+    if(navigator.vibrate){ try{ navigator.vibrate(14); }catch(e){} }
 
-    setTimeout(function(){
-      burst(cx, cy, 1);
-      reveal(ch);
-    }, 320);
+    setTimeout(function(){ playWish(ch); }, 130);
   }
 
   /* ---------------- reveal ---------------- */
@@ -628,6 +1040,7 @@
   }
 
   $('rClose').addEventListener('click', function(){
+    SND.close();
     $('reveal').hidden = true;
     ambientOff();
     var vw = window.innerWidth, vh = window.innerHeight;
@@ -640,6 +1053,7 @@
   /* ---------------- dex ---------------- */
   function openDex(){
     ambientOff();
+    SND.dexOpen();
 
     var n = 0, tot = TOTAL;
     CHARS.forEach(function(c){ if(collected.indexOf(c.id) >= 0) n++; });
@@ -680,13 +1094,14 @@
     document.body.style.overflow = 'hidden';
   }
   $('openDex').addEventListener('click', openDex);
-  $('dexClose').addEventListener('click', function(){ $('dex').hidden = true; document.body.style.overflow=''; });
-  $('dex').addEventListener('click', function(e){ if(e.target === $('dex')){ $('dex').hidden = true; document.body.style.overflow=''; } });
+  $('dexClose').addEventListener('click', function(){ SND.close(); $('dex').hidden = true; document.body.style.overflow=''; });
+  $('dex').addEventListener('click', function(e){ if(e.target === $('dex')){ SND.close(); $('dex').hidden = true; document.body.style.overflow=''; } });
 
   /* ---------------- dex detail ---------------- */
   var dexScroll = 0;
   function openDetail(c){
     if(!c) return;
+    SND.dexCard();
     dexScroll = $('grid').scrollTop;
     var im = $('dImg');
     im.src = imgSrc(c.id);
@@ -705,6 +1120,7 @@
   }
   function closeDetail(){
     if($('detail').hidden) return;
+    SND.close();
     $('detail').hidden = true;
     $('grid').scrollTop = dexScroll;
   }
@@ -724,12 +1140,13 @@
   function showComplete(){
     if(completedShown) return;
     completedShown = true;
+    if(booted) SND.boom();
     var ct = $('completeTitle'); if(ct) ct.textContent = TOTAL + '종 완성!';
     $('complete').hidden = false;
     var vw = window.innerWidth, vh = window.innerHeight;
     burst(vw/2, vh*0.45, 1.6);
     setTimeout(function(){ burst(vw*0.3, vh*0.4, 0.9); burst(vw*0.7, vh*0.5, 0.9); }, 380);
-    if(navigator.vibrate){ try{ navigator.vibrate([20,40,20,40,60]); }catch(e){} }
+    if(booted && navigator.vibrate){ try{ navigator.vibrate([20,40,20,40,60]); }catch(e){} }
   }
   $('resetAll').addEventListener('click', function(){
     if(!window.confirm('도감을 비우고 처음부터 다시 모을까요?')) return;
@@ -738,6 +1155,7 @@
     save(K_COL, collected); save(K_DRAW, draw);
     completedShown = false;
     $('complete').hidden = true;
+    SND.sweep();
     render();
     var vw = window.innerWidth, vh = window.innerHeight;
     burst(vw/2, vh*0.4, 1.1);
@@ -751,9 +1169,25 @@
   }, 300);
 
   window.__dbg = function(){ return {deck: DECK.map(function(c){ return c.id; }), collected: collected.slice(), draw: {date: draw.date, n: draw.n}}; };
+  window.__snd = SND;
 
+  /* sound toggle */
+  function paintSnd(){
+    var b = $('sndBtn');
+    var on = SND.isOn();
+    b.textContent = on ? '🔊' : '🔇';
+    b.setAttribute('aria-label', on ? '소리 끄기' : '소리 켜기');
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.classList.toggle('off', !on);
+  }
+  $('sndBtn').addEventListener('click', function(){ SND.set(!SND.isOn()); paintSnd(); });
+  paintSnd();
+
+  var booted = false;
   render();
+  booted = true;
   if(collected.length >= TOTAL) showComplete();
+  SND.welcome((remaining() > 0 && collected.length < TOTAL) ? 'draw' : 'end');
 })();
 </script>
 </body>
